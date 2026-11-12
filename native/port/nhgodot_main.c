@@ -30,6 +30,11 @@
 
 #undef exit /* we need the real one nowhere, but keep the macro out of here */
 
+/* Only the Windows and DOS-like config headers define PATHLEN. */
+#ifndef PATHLEN
+#define PATHLEN BUFSZ
+#endif
+
 static char nhg_game_dir[PATHLEN];
 static jmp_buf nhg_exit_jmp;
 static int nhg_exit_status;
@@ -40,11 +45,10 @@ ATTRNORETURN void nhgodot_exit(int status) NORETURN;
 int nhgodot_run(int argc, char **argv);
 
 #ifndef WIN32
-static boolean whoami(void);
+boolean whoami(void);
 static struct passwd *get_unix_pw(void);
 #endif
 static void wd_message(void);
-ATTRNORETURN static void opt_terminate(void) NORETURN;
 
 void
 nhgodot_configure(const char *game_dir, unsigned long seed)
@@ -59,6 +63,31 @@ nhgodot_configure(const char *game_dir, unsigned long seed)
         nhg_game_dir[n] = '/';
         nhg_game_dir[n + 1] = '\0';
     }
+}
+
+/* Every fopen() in the core ends up here (see nhgodot_force.h): a relative
+ * name is taken to be relative to the game directory, as if the process had
+ * changed directory there the way the Unix and Windows ports do. */
+#undef fopen
+FILE *
+nhgodot_fopen(const char *name, const char *mode)
+{
+    char path[PATHLEN + BUFSZ];
+    boolean absolute;
+
+    if (!name || !*nhg_game_dir)
+        return fopen(name, mode);
+    absolute = (name[0] == '/' || name[0] == '\\'
+                || (name[0] && name[1] == ':'));
+    /* fqname() results already carry the game directory, which is itself
+     * relative when the caller passed a relative one */
+    if (absolute || !strncmp(name, nhg_game_dir, strlen(nhg_game_dir)))
+        return fopen(name, mode);
+    if (strlen(nhg_game_dir) + strlen(name) >= sizeof path)
+        return (FILE *) 0;
+    Strcpy(path, nhg_game_dir);
+    Strcat(path, name);
+    return fopen(path, mode);
 }
 
 /* Every exit() in the core ends up here (see nhgodot_force.h). */
@@ -261,8 +290,9 @@ wd_message(void)
 
 #ifndef WIN32
 
-/* returns True iff we set plname[] to username which contains a hyphen */
-static boolean
+/* returns True iff we set plname[] to username which contains a hyphen;
+ * also called by earlyarg.c, so it is not static */
+boolean
 whoami(void)
 {
     if (!*svp.plname) {
@@ -466,18 +496,15 @@ sys_random_seed(void)
     return seed;
 }
 
-ATTRNORETURN static void
-opt_terminate(void)
+/* No unique game id: NHUUID is not defined for this port, and the Unix and
+ * Windows sources that normally provide these cannot be linked in. */
+void
+get_nhuuid(void)
 {
-    config_error_done();
-    nh_terminate(EXIT_SUCCESS);
-    /*NOTREACHED*/
 }
 
-ATTRNORETURN void
-after_opt_showpaths(const char *dir)
+void
+free_nhuuid(void)
 {
-    nhUse(dir);
-    opt_terminate();
-    /*NOTREACHED*/
+    (void) memset(svn.nhuuid, 0, sizeof svn.nhuuid);
 }

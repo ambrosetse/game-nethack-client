@@ -32,12 +32,34 @@ void nhgodot_exit(int status) __attribute__((noreturn));
 #include <stdlib.h>
 #define exit(status) nhgodot_exit(status)
 
+/* The core opens data files (nhlib.lua, the level scripts, help text...)
+ * by bare name, relying on the process having changed directory to the game
+ * directory; without DLB, dlb_fopen() is plain fopen().  The Godot process
+ * never changes directory, so relative names are resolved against the game
+ * directory instead (nhgodot_main.c).  Absolute names, which is what fqname()
+ * returns, are passed through unchanged. */
+#include <stdio.h>
+FILE *nhgodot_fopen(const char *name, const char *mode);
+#define fopen(name, mode) nhgodot_fopen(name, mode)
+
 /* MSVC's <stdlib.h> defines min()/max() for C code.  NetHack's win32api.h
  * refuses to be included after them ("should be included first"), and it is
  * the first include of several core files, so drop them here. */
 #if defined(_MSC_VER) && !defined(__cplusplus)
 #undef min
 #undef max
+#endif
+
+/* cfgfiles.c's assure_syscf_file() checks that sysconf is readable with
+ * open(SYSCF_FILE), relative to the working directory, unless the platform is
+ * WIN32.  The Godot process never changes its working directory, so on Unix
+ * that check fails although fopen_config_file() would find the file under the
+ * SYSCONFPREFIX game directory.  SConstruct defines NHGODOT_CFGFILES for
+ * cfgfiles.c only; that file's single open() call is the sysconf check. */
+#if defined(NHGODOT_CFGFILES) && !defined(_WIN32)
+#include <fcntl.h>
+int nhgodot_open_syscf(const char *name, int flags);
+#define open(name, flags) nhgodot_open_syscf(name, flags)
 #endif
 
 #endif /* NHGODOT_FORCE_H */

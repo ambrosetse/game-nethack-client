@@ -63,6 +63,10 @@ if is_windows:
             "_CRT_SECURE_NO_DEPRECATE",
             "_SCL_SECURE_NO_DEPRECATE",
             "HAS_STDINT_H",
+            # MSVC does not set __STDC_VERSION__ by default, so integer.h
+            # would skip <inttypes.h> and sfbase.c's PRId64 & co. would be
+            # undefined; upstream's own MSVC projects define this too.
+            "HAS_INTTYPES_H",
             "HAS_INLINE",
         ]
     )
@@ -80,13 +84,20 @@ else:
     core_env.Append(CFLAGS=["-include", force, "-w"])
 
 core_src = sorted(glob.glob(NH + "/src/*.c"))
+# cfgfiles.c gets NHGODOT_CFGFILES so nhgodot_force.h can make its sysconf
+# check look in the game directory (see that header).
+cfg_src = [f for f in core_src if os.path.basename(f) == "cfgfiles.c"]
+core_src = [f for f in core_src if f not in cfg_src]
+cfg_env = core_env.Clone()
+cfg_env.Append(CPPDEFINES=["NHGODOT_CFGFILES"])
 sys_src = [NH + "/sys/share/pmatchregex.c"]
 if not is_windows:
+    # sys/share/unixtty.c is replaced by native/port/nhgodot_unix.c: it needs
+    # curses and drives a terminal the Godot process does not have.
     sys_src += [
         NH + "/sys/unix/unixunix.c",
         NH + "/sys/unix/unixres.c",
         NH + "/sys/share/ioctl.c",
-        NH + "/sys/share/unixtty.c",
     ]
 port_src = sorted(glob.glob("native/port/*.c"))
 
@@ -115,10 +126,17 @@ def objects(e, files, sub):
     return out
 
 
-core_objs = (
+forced_objs = (
     objects(core_env, core_src, "core")
+    + objects(cfg_env, cfg_src, "core")
     + objects(core_env, sys_src, "sys")
     + objects(core_env, port_src, "port")
+)
+# The scanner does not see a header pulled in with -include / /FI, so tell
+# SCons that every file compiled with it must be rebuilt when it changes.
+Depends(forced_objs, force)
+core_objs = (
+    forced_objs
     + objects(lua_env, lua_src, "lua")
     + objects(nh_env, glob.glob("native/bridge/*.cpp"), "bridge")
 )
@@ -164,7 +182,8 @@ if env["tests"]:
 # -- makedefs (host tool) and data files ---------------------------------------
 
 host_env = Environment(ENV=os.environ)
-host_env.Append(CPPPATH=[NH + "/include"])
+# native/include supplies nhlua.h, which hack.h and alloc.c include.
+host_env.Append(CPPPATH=["native/include", NH + "/include", LUA])
 if host_env["PLATFORM"] == "win32":
     host_env.Append(CPPPATH=[NH + "/sys/windows"])
     host_env.Append(
