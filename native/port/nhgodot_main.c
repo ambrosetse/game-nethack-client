@@ -111,6 +111,19 @@ nhg_set_prefixes(void)
             free((genericptr_t) gf.fqn_prefix[i]);
         gf.fqn_prefix[i] = dupstr(nhg_game_dir);
     }
+#ifdef WIN32
+    /* On UNIX set_savefile_name() puts saves under "save/"; on WIN32 it
+     * adds no directory, so give SAVEPREFIX the subdirectory instead.  That
+     * keeps <game_dir>/save/ as the save location on every platform, which
+     * is where the frontend's has_save() and the native test look. */
+    {
+        char savedir[PATHLEN + 8];
+
+        Snprintf(savedir, sizeof savedir, "%ssave/", nhg_game_dir);
+        free((genericptr_t) gf.fqn_prefix[SAVEPREFIX]);
+        gf.fqn_prefix[SAVEPREFIX] = dupstr(savedir);
+    }
+#endif
 }
 
 int
