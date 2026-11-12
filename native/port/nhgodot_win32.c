@@ -28,6 +28,9 @@ char orgdir[PATHLEN];
 HANDLE hStdOut;
 int windows_startup_state = 0;
 
+/* extern.h only declares this for UNIX and VMS */
+boolean check_user_string(const char *optstr);
+
 boolean
 authorize_wizard_mode(void)
 {

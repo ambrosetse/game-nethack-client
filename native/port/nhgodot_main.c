@@ -170,10 +170,12 @@ nhgodot_run(int argc, char **argv)
        or holds a generic user name like "player" or "games" */
     plnamesuffix();
 
+#if defined(UNIX) || defined(VMS) /* decl.h only has locknum there */
     if (wizard) {
         /* use character name rather than lock letter for file names */
         gl.locknum = 0;
     }
+#endif
 
     dlb_init(); /* must be before newgame() */
 
@@ -243,7 +245,12 @@ nhgodot_run(int argc, char **argv)
                    if locking alphabetically, the existing lock file
                    can still be used; otherwise, discard current one
                    and create another for the new character name */
-                if (!gl.locknum) {
+#if defined(UNIX) || defined(VMS)
+                if (!gl.locknum)
+#endif
+                {
+                    /* without locknum (Windows) locks are always per
+                       character name, so the lock must be replaced */
                     delete_levelfile(0); /* remove empty lock file */
                     getlock();
                 }
