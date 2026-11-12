@@ -9,13 +9,15 @@ extends SceneTree
 ## 2. CJK font: the bundled font draws every CJK/Hangul/Kana character used
 ##    by the translations;
 ## 3. glyph -> tile coverage: when the GDExtension is loaded, both tile atlases
-##    map every glyph of the core's glyph table to a cell inside the atlas.
+##    map every glyph of the core's glyph table to a cell inside the atlas;
+## 4. player-name cleaning (see _check_player_name).
 ##
 ## Exit status 0 = pass.
 
 const LOCALES := ["en", "zh_TW", "zh_CN", "ko", "ja"]
 const CJK_FONT := "res://assets/fonts/NotoSansCJKsc-Regular.otf"
 const TileAtlas = preload("res://scripts/game/tile_atlas.gd")
+const NhConst = preload("res://scripts/core/nh_const.gd")
 
 var failures := 0
 
@@ -24,8 +26,25 @@ func _init() -> void:
 	var translations := _check_translations()
 	_check_font(translations)
 	_check_glyph_coverage()
+	_check_player_name()
 	print("PASSED" if failures == 0 else "FAILED (%d)" % failures)
 	quit(1 if failures else 0)
+
+
+## 4. player names: ',' and ':' never reach NETHACKOPTIONS (same cases as
+##    native_test.cpp's check of nhb::clean_player_name).
+func _check_player_name() -> void:
+	var cases := {
+		"tester": "tester",
+		"Bob,!autopickup": "Bob!autopickup",
+		"x,windowtype:tty": "xwindowtypetty",
+		"  a\tb\n ": "ab",
+		",:": "",
+	}
+	for k in cases:
+		var got := NhConst.clean_player_name(k)
+		if got != cases[k]:
+			_fail("clean_player_name(%s) = %s, want %s" % [k, got, cases[k]])
 
 
 func _fail(msg: String) -> void:

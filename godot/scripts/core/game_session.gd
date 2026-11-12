@@ -92,7 +92,7 @@ func stage_data() -> bool:
 			return false
 		out.store_buffer(bytes)
 	for keep in ["record", "logfile", "xlogfile", "perm", "livelog"]:
-		var p := GAME_DIR + "/" + keep
+		var p: String = GAME_DIR + "/" + keep
 		if not FileAccess.file_exists(p):
 			FileAccess.open(p, FileAccess.WRITE)
 	return true

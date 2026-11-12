@@ -129,6 +129,21 @@ void append_opt(std::string &opts, const char *key, const std::string &v) {
 
 } // namespace
 
+std::string clean_player_name(const std::string &name) {
+    std::string out;
+    out.reserve(name.size());
+    for (unsigned char c : name) {
+        if (c == ',' || c == ':' || c < 32 || c == 127)
+            continue;
+        out += (char) c;
+    }
+    size_t b = out.find_first_not_of(' ');
+    if (b == std::string::npos)
+        return std::string();
+    size_t e = out.find_last_not_of(' ');
+    return out.substr(b, e - b + 1);
+}
+
 bool start(const Config &cfg) {
     bool expected = false;
     if (!worker_started.compare_exchange_strong(expected, true))
@@ -137,7 +152,7 @@ bool start(const Config &cfg) {
     g_seed = cfg.seed;
 
     std::string opts;
-    append_opt(opts, "name", cfg.name);
+    append_opt(opts, "name", clean_player_name(cfg.name));
     append_opt(opts, "role", cfg.role);
     append_opt(opts, "race", cfg.race);
     append_opt(opts, "gender", cfg.gender);

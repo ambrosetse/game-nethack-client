@@ -256,6 +256,137 @@ alternative_palette(char *op)
     return 0;
 }
 
+/* -- file name wildcards (files.c: get_saved_games) -- */
+
+static HANDLE ffhandle = (HANDLE) 0;
+static WIN32_FIND_DATAA ffd;
+
+int
+findfirst(char *path)
+{
+    if (ffhandle && ffhandle != INVALID_HANDLE_VALUE)
+        FindClose(ffhandle);
+    ffhandle = FindFirstFileA(path, &ffd);
+    return (ffhandle == INVALID_HANDLE_VALUE) ? 0 : 1;
+}
+
+int
+findnext(void)
+{
+    if (!ffhandle || ffhandle == INVALID_HANDLE_VALUE)
+        return 0;
+    return FindNextFileA(ffhandle, &ffd) ? 1 : 0;
+}
+
+char *
+foundfile_buffer(void)
+{
+    return &ffd.cFileName[0];
+}
+
+void
+Delay(int ms)
+{
+    Sleep((DWORD) ms);
+}
+
+/* -- paths (files.c: fqname, reveal_paths, make_converted_name) -- */
+
+/* windsys.c asks the user profile API (userenv.lib); %USERPROFILE% holds
+   the same directory and needs no extra library. */
+boolean
+get_user_home_folder(char *homebuf, size_t sz)
+{
+    const char *home = nh_getenv("USERPROFILE");
+
+    if (!home || !*home || !homebuf || !sz)
+        return FALSE;
+    Snprintf(homebuf, sz, "%s", home);
+    return TRUE;
+}
+
+/* The frontend always sets the game directories itself; there is no
+   portable-device install, and an empty string tells files.c so. */
+const char *
+get_portable_device(void)
+{
+    return "";
+}
+
+/* Expand %VAR% environment references in a path (from windsys.c). */
+char *
+translate_path_variables(const char *str, char *buf)
+{
+    const char *src;
+    char evar[BUFSZ], *dest, *envp, *eptr = evar;
+    boolean in_evar = FALSE;
+    size_t ccount, ecount = 0, destcount = 0, slen = str ? strlen(str) : 0;
+
+    if (!slen || !buf) {
+        if (buf)
+            *buf = '\0';
+        return buf;
+    }
+    dest = buf;
+    src = str;
+    for (ccount = 0;
+         ccount < slen && destcount < (BUFSZ - 1) && ecount < (BUFSZ - 1);
+         ++ccount, ++src) {
+        if (*src == '%') {
+            if (in_evar) {
+                *eptr = '\0';
+                envp = nh_getenv(evar);
+                if (envp) {
+                    size_t elen = strlen(envp);
+
+                    if (elen + destcount < (size_t) (BUFSZ - 1)) {
+                        Strcpy(dest, envp);
+                        dest += elen;
+                        destcount += elen;
+                    }
+                }
+            } else {
+                eptr = evar;
+                ecount = 0;
+            }
+            in_evar = !in_evar;
+            continue;
+        }
+        if (in_evar) {
+            *eptr++ = *src;
+            ecount++;
+        } else {
+            *dest++ = *src;
+            destcount++;
+        }
+    }
+    *dest = '\0';
+    return buf;
+}
+
+/* -- version.c -- */
+
+char *
+get_port_id(char *buf)
+{
+#if defined(_M_X64) || defined(_M_AMD64)
+    Strcpy(buf, "x64");
+#elif defined(_M_ARM64)
+    Strcpy(buf, "ARM64");
+#else
+    Strcpy(buf, "x86");
+#endif
+    return buf;
+}
+
+/* #version's "copy to paste buffer": the Godot frontend owns the
+   clipboard, so the core has nothing to do here. */
+void
+port_insert_pastebuf(char *buf)
+{
+    nhUse(buf);
+}
+
 #ifdef PORT_HELP
 void
 port_help(void)

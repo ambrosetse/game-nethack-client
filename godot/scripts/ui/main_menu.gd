@@ -104,7 +104,7 @@ func _build_chargen() -> PanelContainer:
 	_name.placeholder_text = "CHARGEN_NAME_HINT"
 	_name.text = Settings.player_name
 	_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_name.text_changed.connect(func(_t): _validate())
+	_name.text_changed.connect(_on_name_changed)
 	grid.add_child(_name)
 
 	for spec in [["role", "CHARGEN_ROLE", NhConst.ROLES], ["race", "CHARGEN_RACE", NhConst.RACES],
@@ -144,10 +144,27 @@ func _pick(key: String) -> String:
 	return o.get_item_metadata(o.selected)
 
 
+## Drop ',' and ':' as they are typed or pasted (see NhConst.NAME_FORBIDDEN).
+func _on_name_changed(text: String) -> void:
+	var kept := ""
+	var caret := _name.caret_column
+	for i in text.length():
+		var ch := text[i]
+		if NhConst.NAME_FORBIDDEN.has(ch):
+			if i < _name.caret_column:
+				caret -= 1
+			continue
+		kept += ch
+	if kept != text:
+		_name.text = kept
+		_name.caret_column = maxi(caret, 0)
+	_validate()
+
+
 func _validate() -> void:
 	var ok := NhConst.valid_combo(_pick("role"), _pick("race"), _pick("gender"), _pick("align"))
 	_warning.visible = not ok
-	_start.disabled = not ok or _name.text.strip_edges().is_empty()
+	_start.disabled = not ok or NhConst.clean_player_name(_name.text).is_empty()
 
 
 func _build_language() -> PanelContainer:
@@ -184,11 +201,11 @@ func _show(which: String) -> void:
 
 func _on_continue() -> void:
 	# NetHack restores the save that belongs to this player name.
-	_launch({"name": Settings.player_name})
+	_launch({"name": NhConst.clean_player_name(Settings.player_name)})
 
 
 func _on_start() -> void:
-	var cfg := {"name": _name.text.strip_edges()}
+	var cfg := {"name": NhConst.clean_player_name(_name.text)}
 	Settings.set_value("player_name", cfg.name)
 	for k in _pickers:
 		cfg[k] = _pick(k)

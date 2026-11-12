@@ -148,6 +148,23 @@ const RACE_ALIGNS := {
 	"dwarf": ["lawful"], "gnome": ["neutral"], "orc": ["chaotic"],
 }
 
+## Characters a player name may not contain: the name is passed to the core
+## as "name:<value>" inside the comma-separated NETHACKOPTIONS string, so a
+## ',' would start another option and a ':' is the option separator.
+const NAME_FORBIDDEN := [",", ":"]
+
+
+## The player name with forbidden and control characters removed and the
+## ends trimmed.  native/bridge/nhbridge.cpp applies the same rule.
+static func clean_player_name(s: String) -> String:
+	var out := ""
+	for ch in s:
+		if NAME_FORBIDDEN.has(ch) or ch.unicode_at(0) < 32 or ch.unicode_at(0) == 127:
+			continue
+		out += ch
+	return out.strip_edges()
+
+
 ## Return true when role/race/gender/align is a combination NetHack allows.
 ## "random" matches anything.
 static func valid_combo(role: String, race: String, gender: String, align: String) -> bool:

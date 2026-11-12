@@ -64,6 +64,26 @@ static int play(const std::string &game_dir, unsigned long seed,
                         "pettype:none,time,showexp";
     cfg.seed = seed;
 
+    /* a free-text name must never add options to NETHACKOPTIONS */
+    const struct {
+        const char *in, *out;
+    } names[] = {
+        {"tester", "tester"},
+        {"Bob,!autopickup", "Bob!autopickup"},
+        {"x,windowtype:tty", "xwindowtypetty"},
+        {"  a\tb\n ", "ab"},
+        {",:", ""},
+    };
+    for (const auto &n : names) {
+        std::string got = nhb::clean_player_name(n.in);
+        if (got != n.out) {
+            std::fprintf(stderr, "FAIL: clean_player_name(\"%s\") = \"%s\", "
+                                 "want \"%s\"\n",
+                         n.in, got.c_str(), n.out);
+            return 1;
+        }
+    }
+
     /* glyph metadata must be usable before and during a game */
     if (nhb::glyph_table().empty()) {
         std::fprintf(stderr, "FAIL: empty glyph table\n");

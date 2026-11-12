@@ -52,6 +52,12 @@ struct Config {
     unsigned long seed = 0;    /* 0 = system entropy */
 };
 
+/* The character name as it goes into NETHACKOPTIONS: ',' (option separator),
+ * ':' (key/value separator) and control characters are dropped and the ends
+ * trimmed, so a free-text name can never add another option.  start()
+ * applies this; the frontend applies the same rule before it saves the name. */
+std::string clean_player_name(const std::string &name);
+
 /* Start the game on a worker thread.  Only one game may run per process
  * (the NetHack core is full of globals); returns false if one already ran. */
 bool start(const Config &cfg);
