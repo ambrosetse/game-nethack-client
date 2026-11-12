@@ -1,0 +1,41 @@
+; Engine configuration file.
+; Godot 4.7 project for the NetHack frontend.  See ../README.md.
+
+config_version=5
+
+[application]
+
+config/name="NetHack (Godot frontend)"
+config/description="A 2D/3D graphical frontend for NetHack."
+config/version="0.1.0"
+run/main_scene="res://scenes/main_menu.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+config/icon="res://assets/icons/app_icon.svg"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="NetHackGodot"
+
+[autoload]
+
+Settings="*res://scripts/core/settings.gd"
+Session="*res://scripts/core/game_session.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=800
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[gui]
+
+theme/custom="res://assets/ui/theme.tres"
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://locale/en.po", "res://locale/zh_TW.po", "res://locale/zh_CN.po", "res://locale/ko.po", "res://locale/ja.po")
+locale/fallback="en"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+anti_aliasing/quality/msaa_3d=2

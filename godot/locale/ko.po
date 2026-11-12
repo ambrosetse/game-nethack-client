@@ -1,0 +1,376 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: NetHack Godot\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ko\n"
+
+msgid "GAME_TITLE"
+msgstr "NetHack"
+
+msgid "GAME_SUBTITLE"
+msgstr "고전 로그라이크의 Godot 프런트엔드"
+
+msgid "GAME_PAUSED"
+msgstr "일시 정지"
+
+msgid "GAME_RESUME"
+msgstr "계속하기"
+
+msgid "GAME_HELP"
+msgstr "도움말"
+
+msgid "GAME_SAVE_QUIT"
+msgstr "저장 후 종료"
+
+msgid "GAME_OVER"
+msgstr "게임이 끝났습니다"
+
+msgid "GAME_BACK_TO_MENU"
+msgstr "메인 메뉴로"
+
+msgid "MENU_CONTINUE"
+msgstr "이어하기"
+
+msgid "MENU_NEW_GAME"
+msgstr "새 게임"
+
+msgid "MENU_OPTIONS"
+msgstr "옵션"
+
+msgid "MENU_LANGUAGE"
+msgstr "언어"
+
+msgid "MENU_QUIT"
+msgstr "종료"
+
+msgid "CHARGEN_TITLE"
+msgstr "캐릭터 선택"
+
+msgid "CHARGEN_NAME"
+msgstr "이름"
+
+msgid "CHARGEN_NAME_HINT"
+msgstr "비워 두면 나중에 묻습니다"
+
+msgid "CHARGEN_ROLE"
+msgstr "직업"
+
+msgid "CHARGEN_RACE"
+msgstr "종족"
+
+msgid "CHARGEN_GENDER"
+msgstr "성별"
+
+msgid "CHARGEN_ALIGN"
+msgstr "성향"
+
+msgid "CHARGEN_RANDOM"
+msgstr "무작위"
+
+msgid "CHARGEN_INVALID"
+msgstr "허용되지 않는 조합입니다"
+
+msgid "CHARGEN_START"
+msgstr "시작"
+
+msgid "UI_BACK"
+msgstr "뒤로"
+
+msgid "UI_CLOSE"
+msgstr "닫기"
+
+msgid "UI_OK"
+msgstr "확인"
+
+msgid "UI_CANCEL"
+msgstr "취소"
+
+msgid "ERROR_TITLE"
+msgstr "오류"
+
+msgid "ERROR_NO_EXTENSION"
+msgstr "NetHack 네이티브 확장이 로드되지 않았습니다. native/를 빌드한 뒤(README 참고) 다시 시도하세요."
+
+msgid "ERROR_START_FAILED"
+msgstr "게임을 시작할 수 없습니다."
+
+msgid "OPTIONS_TITLE"
+msgstr "옵션"
+
+msgid "OPTIONS_LANGUAGE"
+msgstr "언어"
+
+msgid "OPTIONS_RENDERER"
+msgstr "렌더러"
+
+msgid "OPTIONS_RENDERER_2D"
+msgstr "2D 타일"
+
+msgid "OPTIONS_RENDERER_3D"
+msgstr "3D"
+
+msgid "OPTIONS_MOVEMENT"
+msgstr "이동 키"
+
+msgid "OPTIONS_MOVEMENT_VI"
+msgstr "vi 키 (hjklyubn)"
+
+msgid "OPTIONS_MOVEMENT_NUMPAD"
+msgstr "숫자 키패드"
+
+msgid "OPTIONS_TILESET"
+msgstr "타일셋"
+
+msgid "OPTIONS_TILESET_ORIGINAL"
+msgstr "오리지널"
+
+msgid "OPTIONS_TILESET_CLASSIC"
+msgstr "클래식 (NetHack 타일)"
+
+msgid "OPTIONS_HINT"
+msgstr "게임 중 F2로 2D/3D를 전환합니다. 이동 키는 다음 게임부터 적용됩니다."
+
+msgid "HUD_MESSAGES"
+msgstr "메시지"
+
+msgid "HUD_HISTORY"
+msgstr "기록"
+
+msgid "HUD_HISTORY_HINT"
+msgstr "이전 메시지 보기 (F5)"
+
+msgid "HUD_HP"
+msgstr "HP"
+
+msgid "HUD_PW"
+msgstr "마력"
+
+msgid "HUD_DLVL"
+msgstr "층"
+
+msgid "HUD_AC"
+msgstr "AC"
+
+msgid "HUD_LEVEL"
+msgstr "경험"
+
+msgid "HUD_GOLD"
+msgstr "금화"
+
+msgid "HUD_TIME"
+msgstr "턴"
+
+msgid "HUD_STR"
+msgstr "힘"
+
+msgid "HUD_DEX"
+msgstr "민"
+
+msgid "HUD_CON"
+msgstr "체"
+
+msgid "HUD_INT"
+msgstr "지"
+
+msgid "HUD_WIS"
+msgstr "지혜"
+
+msgid "HUD_CHA"
+msgstr "매"
+
+msgid "HUD_ALIGN"
+msgstr "성향"
+
+msgid "HUD_HUNGER"
+msgstr "배고픔"
+
+msgid "HUD_ENCUMBRANCE"
+msgstr "짐"
+
+msgid "HUD_INVENTORY"
+msgstr "소지품 (F4)"
+
+msgid "DIALOG_ANY_KEY"
+msgstr "아무 키나 누르세요"
+
+msgid "DIALOG_YES"
+msgstr "예"
+
+msgid "DIALOG_NO"
+msgstr "아니요"
+
+msgid "DIALOG_QUIT"
+msgstr "그만"
+
+msgid "DIALOG_ALL"
+msgstr "전부"
+
+msgid "DIALOG_EXTCMD"
+msgstr "확장 명령"
+
+msgid "DIALOG_EXTCMD_HINT"
+msgstr "입력하여 필터…"
+
+msgid "DIALOG_TOMBSTONE"
+msgstr "고이 잠드소서"
+
+msgid "ROLE_ARC"
+msgstr "고고학자"
+
+msgid "ROLE_BAR"
+msgstr "야만인"
+
+msgid "ROLE_CAV"
+msgstr "원시인"
+
+msgid "ROLE_HEA"
+msgstr "치유사"
+
+msgid "ROLE_KNI"
+msgstr "기사"
+
+msgid "ROLE_MON"
+msgstr "수도사"
+
+msgid "ROLE_PRI"
+msgstr "사제"
+
+msgid "ROLE_RAN"
+msgstr "레인저"
+
+msgid "ROLE_ROG"
+msgstr "도적"
+
+msgid "ROLE_SAM"
+msgstr "사무라이"
+
+msgid "ROLE_TOU"
+msgstr "관광객"
+
+msgid "ROLE_VAL"
+msgstr "발키리"
+
+msgid "ROLE_WIZ"
+msgstr "마법사"
+
+msgid "RACE_HUMAN"
+msgstr "인간"
+
+msgid "RACE_ELF"
+msgstr "엘프"
+
+msgid "RACE_DWARF"
+msgstr "드워프"
+
+msgid "RACE_GNOME"
+msgstr "노움"
+
+msgid "RACE_ORC"
+msgstr "오크"
+
+msgid "GENDER_MALE"
+msgstr "남성"
+
+msgid "GENDER_FEMALE"
+msgstr "여성"
+
+msgid "ALIGN_LAWFUL"
+msgstr "질서"
+
+msgid "ALIGN_NEUTRAL"
+msgstr "중립"
+
+msgid "ALIGN_CHAOTIC"
+msgstr "혼돈"
+
+msgid "COND_BAREH"
+msgstr "맨손"
+
+msgid "COND_BLIND"
+msgstr "실명"
+
+msgid "COND_BUSY"
+msgstr "바쁨"
+
+msgid "COND_CONF"
+msgstr "혼란"
+
+msgid "COND_DEAF"
+msgstr "청각 상실"
+
+msgid "COND_ELF_IRON"
+msgstr "철 화상"
+
+msgid "COND_FLY"
+msgstr "비행"
+
+msgid "COND_FOODPOIS"
+msgstr "식중독"
+
+msgid "COND_GLOWHANDS"
+msgstr "빛나는 손"
+
+msgid "COND_GRAB"
+msgstr "붙잡힘"
+
+msgid "COND_HALLU"
+msgstr "환각"
+
+msgid "COND_HELD"
+msgstr "붙들림"
+
+msgid "COND_ICY"
+msgstr "빙판"
+
+msgid "COND_INLAVA"
+msgstr "용암 속"
+
+msgid "COND_LEV"
+msgstr "공중 부양"
+
+msgid "COND_PARLYZ"
+msgstr "마비"
+
+msgid "COND_RIDE"
+msgstr "탑승"
+
+msgid "COND_SLEEPING"
+msgstr "수면"
+
+msgid "COND_SLIME"
+msgstr "슬라임화"
+
+msgid "COND_SLIPPERY"
+msgstr "미끄러운 손"
+
+msgid "COND_STONE"
+msgstr "석화 중"
+
+msgid "COND_STRNGL"
+msgstr "질식"
+
+msgid "COND_STUN"
+msgstr "기절"
+
+msgid "COND_SUBMERGED"
+msgstr "수중"
+
+msgid "COND_TERMILL"
+msgstr "중병"
+
+msgid "COND_TETHERED"
+msgstr "묶임"
+
+msgid "COND_TRAPPED"
+msgstr "갇힘"
+
+msgid "COND_UNCONSC"
+msgstr "의식 불명"
+
+msgid "COND_WOUNDEDL"
+msgstr "다리 부상"
+
+msgid "COND_HOLDING"
+msgstr "붙잡는 중"
