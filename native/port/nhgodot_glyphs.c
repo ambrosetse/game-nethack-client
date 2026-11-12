@@ -34,6 +34,17 @@ enum nhgodot_glyph_category {
     NHG_CAT_NOTHING
 };
 
+/* display.h keeps its glyph_is_piletop() under #if 0, so build it here from
+ * the per-kind piletop tests that are defined. */
+#ifndef glyph_is_piletop
+#define glyph_is_piletop(glyph) \
+    (glyph_is_body_piletop(glyph)           \
+     || glyph_is_fem_statue_piletop(glyph)  \
+     || glyph_is_male_statue_piletop(glyph) \
+     || glyph_is_piletop_generic_obj(glyph) \
+     || glyph_is_normal_piletop_obj(glyph))
+#endif
+
 static boolean glyphmap_ready = FALSE;
 static const char *symnames[SYM_MAX];
 static char namebuf[BUFSZ];

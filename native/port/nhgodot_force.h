@@ -32,4 +32,12 @@ void nhgodot_exit(int status) __attribute__((noreturn));
 #include <stdlib.h>
 #define exit(status) nhgodot_exit(status)
 
+/* MSVC's <stdlib.h> defines min()/max() for C code.  NetHack's win32api.h
+ * refuses to be included after them ("should be included first"), and it is
+ * the first include of several core files, so drop them here. */
+#if defined(_MSC_VER) && !defined(__cplusplus)
+#undef min
+#undef max
+#endif
+
 #endif /* NHGODOT_FORCE_H */
