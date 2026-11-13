@@ -22,3 +22,14 @@ godot/assets/fonts/LICENSE
 godot/.godot/
 godot/export/
 dist/
+# Toolworks gitignore baseline
+.env
+*.env.local
+*.pyc
+.venv/
+.ruff_cache/
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
