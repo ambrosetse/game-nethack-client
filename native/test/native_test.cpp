@@ -106,7 +106,8 @@ static int play(const std::string &game_dir, unsigned long seed,
 
     while (!game_over) {
         if (std::chrono::steady_clock::now() - t0 > std::chrono::seconds(120)) {
-            std::fprintf(stderr, "FAIL: timed out\n");
+            std::fprintf(stderr, "FAIL: timed out\nmessages so far:\n%s\n",
+                         all_msgs.c_str());
             nhb::request_save_quit();
             nhb::join(5000);
             return 1;

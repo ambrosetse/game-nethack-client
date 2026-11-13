@@ -216,7 +216,12 @@ nhgodot_run(int argc, char **argv)
     if (*svp.plname && (nhfp = restore_saved_game()) != 0) {
         const char *fq_save = fqname(gs.SAVEF, SAVEPREFIX, 1);
 
+#ifndef WIN32
+        /* Unix only: on Windows a mode of 0 makes the file read-only, so
+           delete_savefile() and the next save would fail (windmain.c
+           skips this too) */
         (void) chmod(fq_save, 0); /* disallow parallel restores */
+#endif
         pline("Restoring save file...");
         mark_synch(); /* flush output */
         if (dorecover(nhfp)) {
@@ -227,7 +232,9 @@ nhgodot_run(int argc, char **argv)
                 if (y_n("Do you want to keep the save file?") == 'n') {
                     (void) delete_savefile();
                 } else {
+#ifndef WIN32
                     (void) chmod(fq_save, FCMASK); /* back to readable */
+#endif
                     nh_compress(fq_save);
                 }
             }
