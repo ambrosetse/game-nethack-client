@@ -1,0 +1,13 @@
+# NetHack system configuration for the Godot frontend.
+#
+# Staged next to the data files in the game directory (user://nethack/).
+# This is a single-user desktop game, so any local user may use wizard
+# (debug) and explore mode.
+
+WIZARDS=*
+EXPLORERS=*
+MAXPLAYERS=10
+
+# Never try to attach a debugger from inside the Godot process.
+PANICTRACE_GDB=0
+PANICTRACE_LIBC=0

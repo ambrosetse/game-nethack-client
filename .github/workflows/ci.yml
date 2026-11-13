@@ -1,0 +1,175 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GODOT_VERSION: 4.7.2
+  GODOT_TAG: 4.7.2-stable
+  SCONS_VERSION: 4.11.1
+
+jobs:
+  native:
+    name: Native (${{ matrix.platform }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            scons_args: ""
+          - os: windows-latest
+            platform: windows
+            scons_args: ""
+          - os: macos-latest
+            platform: macos
+            scons_args: arch=universal
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: "3.x"
+
+      - name: Install SCons
+        run: python -m pip install "scons==${SCONS_VERSION}"
+
+      - name: Build GDExtension (debug), native test and data files
+        run: scons platform=${{ matrix.platform }} target=template_debug tests=yes ${{ matrix.scons_args }} -j4
+
+      - name: Build GDExtension (release)
+        run: scons platform=${{ matrix.platform }} target=template_release ${{ matrix.scons_args }} -j4
+
+      - name: Native test - fixed seed, scripted keys, save
+        run: |
+          python tools/stage_gamedir.py godot/nethack_data build/nhtest
+          build/${{ matrix.platform }}/nethack_native_test --play build/nhtest --seed 42
+
+      - name: Native test - restore the save
+        run: build/${{ matrix.platform }}/nethack_native_test --play build/nhtest --seed 42 --expect-restore
+
+      - name: Generate tilesets
+        run: |
+          build/${{ matrix.platform }}/nethack_native_test --dump-glyphs build/GLYPHS.tsv
+          python tools/make_tileset.py build/GLYPHS.tsv godot/assets/tiles
+          python tools/convert_share_tiles.py build/GLYPHS.tsv thirdparty/NetHack/win/share godot/assets/tiles
+
+      - name: Glyph -> tile coverage test
+        run: python tools/check_glyph_coverage.py build/GLYPHS.tsv godot/assets/tiles
+
+      - name: Translation coverage test
+        run: python tools/check_translations.py
+
+      - name: Upload native libraries
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: native-${{ matrix.platform }}
+          path: godot/bin/
+          if-no-files-found: error
+
+      - name: Upload generated assets
+        if: matrix.platform == 'linux'
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: generated-assets
+          path: |
+            godot/assets/tiles/
+            godot/nethack_data/
+          if-no-files-found: error
+
+  export:
+    name: Godot tests and export
+    needs: native
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: "3.x"
+
+      - name: Download native libraries
+        uses: actions/download-artifact@v8.0.2
+        with:
+          pattern: native-*
+          path: godot/bin
+          merge-multiple: true
+
+      - name: Download generated assets
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: generated-assets
+          path: godot
+
+      - name: Fetch CJK font (pinned, checksum-verified)
+        run: python tools/fetch_fonts.py
+
+      - name: Install Godot and export templates
+        run: |
+          mkdir -p "$RUNNER_TEMP/godot"
+          curl -fsSL -o "$RUNNER_TEMP/godot/godot.zip" \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_TAG}/Godot_v${GODOT_TAG}_linux.x86_64.zip"
+          curl -fsSL -o "$RUNNER_TEMP/godot/templates.tpz" \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_TAG}/Godot_v${GODOT_TAG}_export_templates.tpz"
+          curl -fsSL -o "$RUNNER_TEMP/godot/SHA512-SUMS.txt" \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_TAG}/SHA512-SUMS.txt"
+          cd "$RUNNER_TEMP/godot"
+          grep -E " (Godot_v${GODOT_TAG}_linux.x86_64.zip|Godot_v${GODOT_TAG}_export_templates.tpz)$" SHA512-SUMS.txt \
+            | sed -e "s/Godot_v${GODOT_TAG}_linux.x86_64.zip/godot.zip/" -e "s/Godot_v${GODOT_TAG}_export_templates.tpz/templates.tpz/" \
+            | sha512sum -c -
+          unzip -q godot.zip
+          mv "Godot_v${GODOT_TAG}_linux.x86_64" godot
+          echo "$RUNNER_TEMP/godot" >> "$GITHUB_PATH"
+          TPL="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$TPL"
+          unzip -q templates.tpz
+          mv templates/* "$TPL/"
+
+      - name: Import project
+        run: godot --headless --path godot --import
+
+      - name: GDScript tests (translations, CJK font, glyph coverage)
+        run: godot --headless --path godot --script res://tests/run_tests.gd
+
+      - name: Export Windows, macOS and Linux builds
+        run: |
+          mkdir -p godot/export/windows godot/export/macos godot/export/linux
+          godot --headless --path godot --export-release "Windows Desktop" export/windows/NetHackGodot.exe
+          godot --headless --path godot --export-release "macOS" export/macos/NetHackGodot.zip
+          godot --headless --path godot --export-release "Linux" export/linux/NetHackGodot.x86_64
+          test -f godot/export/windows/NetHackGodot.exe
+          test -f godot/export/macos/NetHackGodot.zip
+          test -f godot/export/linux/NetHackGodot.x86_64
+
+      - name: Upload Windows x86_64 build
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: NetHackGodot-windows-x86_64
+          path: godot/export/windows/
+          if-no-files-found: error
+
+      - name: Upload macOS universal build
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: NetHackGodot-macos-universal
+          path: godot/export/macos/
+          if-no-files-found: error
+
+      - name: Upload Linux x86_64 build
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: NetHackGodot-linux-x86_64
+          path: godot/export/linux/
+          if-no-files-found: error

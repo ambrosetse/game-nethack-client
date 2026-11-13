@@ -1,0 +1,376 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: NetHack Godot\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+
+msgid "GAME_TITLE"
+msgstr "NetHack"
+
+msgid "GAME_SUBTITLE"
+msgstr "經典 Roguelike 的 Godot 前端"
+
+msgid "GAME_PAUSED"
+msgstr "已暫停"
+
+msgid "GAME_RESUME"
+msgstr "繼續遊戲"
+
+msgid "GAME_HELP"
+msgstr "說明"
+
+msgid "GAME_SAVE_QUIT"
+msgstr "存檔並離開"
+
+msgid "GAME_OVER"
+msgstr "遊戲結束"
+
+msgid "GAME_BACK_TO_MENU"
+msgstr "返回主選單"
+
+msgid "MENU_CONTINUE"
+msgstr "繼續"
+
+msgid "MENU_NEW_GAME"
+msgstr "新遊戲"
+
+msgid "MENU_OPTIONS"
+msgstr "選項"
+
+msgid "MENU_LANGUAGE"
+msgstr "語言"
+
+msgid "MENU_QUIT"
+msgstr "離開"
+
+msgid "CHARGEN_TITLE"
+msgstr "選擇你的角色"
+
+msgid "CHARGEN_NAME"
+msgstr "名字"
+
+msgid "CHARGEN_NAME_HINT"
+msgstr "留空則稍後詢問"
+
+msgid "CHARGEN_ROLE"
+msgstr "職業"
+
+msgid "CHARGEN_RACE"
+msgstr "種族"
+
+msgid "CHARGEN_GENDER"
+msgstr "性別"
+
+msgid "CHARGEN_ALIGN"
+msgstr "陣營"
+
+msgid "CHARGEN_RANDOM"
+msgstr "隨機"
+
+msgid "CHARGEN_INVALID"
+msgstr "此組合不可用"
+
+msgid "CHARGEN_START"
+msgstr "開始"
+
+msgid "UI_BACK"
+msgstr "返回"
+
+msgid "UI_CLOSE"
+msgstr "關閉"
+
+msgid "UI_OK"
+msgstr "確定"
+
+msgid "UI_CANCEL"
+msgstr "取消"
+
+msgid "ERROR_TITLE"
+msgstr "錯誤"
+
+msgid "ERROR_NO_EXTENSION"
+msgstr "未載入 NetHack 原生擴充。請先建置 native/（見 README）後再試。"
+
+msgid "ERROR_START_FAILED"
+msgstr "無法開始遊戲。"
+
+msgid "OPTIONS_TITLE"
+msgstr "選項"
+
+msgid "OPTIONS_LANGUAGE"
+msgstr "語言"
+
+msgid "OPTIONS_RENDERER"
+msgstr "繪製模式"
+
+msgid "OPTIONS_RENDERER_2D"
+msgstr "2D 圖塊"
+
+msgid "OPTIONS_RENDERER_3D"
+msgstr "3D"
+
+msgid "OPTIONS_MOVEMENT"
+msgstr "移動按鍵"
+
+msgid "OPTIONS_MOVEMENT_VI"
+msgstr "vi 鍵（hjklyubn）"
+
+msgid "OPTIONS_MOVEMENT_NUMPAD"
+msgstr "數字鍵盤"
+
+msgid "OPTIONS_TILESET"
+msgstr "圖塊集"
+
+msgid "OPTIONS_TILESET_ORIGINAL"
+msgstr "原創"
+
+msgid "OPTIONS_TILESET_CLASSIC"
+msgstr "經典（NetHack 圖塊）"
+
+msgid "OPTIONS_HINT"
+msgstr "遊戲中按 F2 切換 2D/3D。移動按鍵於下一局生效。"
+
+msgid "HUD_MESSAGES"
+msgstr "訊息"
+
+msgid "HUD_HISTORY"
+msgstr "歷史"
+
+msgid "HUD_HISTORY_HINT"
+msgstr "顯示先前訊息（F5）"
+
+msgid "HUD_HP"
+msgstr "生命"
+
+msgid "HUD_PW"
+msgstr "魔力"
+
+msgid "HUD_DLVL"
+msgstr "層數"
+
+msgid "HUD_AC"
+msgstr "防禦"
+
+msgid "HUD_LEVEL"
+msgstr "經驗"
+
+msgid "HUD_GOLD"
+msgstr "金幣"
+
+msgid "HUD_TIME"
+msgstr "回合"
+
+msgid "HUD_STR"
+msgstr "力"
+
+msgid "HUD_DEX"
+msgstr "敏"
+
+msgid "HUD_CON"
+msgstr "體"
+
+msgid "HUD_INT"
+msgstr "智"
+
+msgid "HUD_WIS"
+msgstr "感"
+
+msgid "HUD_CHA"
+msgstr "魅"
+
+msgid "HUD_ALIGN"
+msgstr "陣營"
+
+msgid "HUD_HUNGER"
+msgstr "飢餓"
+
+msgid "HUD_ENCUMBRANCE"
+msgstr "負重"
+
+msgid "HUD_INVENTORY"
+msgstr "物品（F4）"
+
+msgid "DIALOG_ANY_KEY"
+msgstr "按任意鍵"
+
+msgid "DIALOG_YES"
+msgstr "是"
+
+msgid "DIALOG_NO"
+msgstr "否"
+
+msgid "DIALOG_QUIT"
+msgstr "離開"
+
+msgid "DIALOG_ALL"
+msgstr "全部"
+
+msgid "DIALOG_EXTCMD"
+msgstr "擴充指令"
+
+msgid "DIALOG_EXTCMD_HINT"
+msgstr "輸入以篩選…"
+
+msgid "DIALOG_TOMBSTONE"
+msgstr "安息吧"
+
+msgid "ROLE_ARC"
+msgstr "考古學家"
+
+msgid "ROLE_BAR"
+msgstr "野蠻人"
+
+msgid "ROLE_CAV"
+msgstr "穴居人"
+
+msgid "ROLE_HEA"
+msgstr "醫者"
+
+msgid "ROLE_KNI"
+msgstr "騎士"
+
+msgid "ROLE_MON"
+msgstr "武僧"
+
+msgid "ROLE_PRI"
+msgstr "祭司"
+
+msgid "ROLE_RAN"
+msgstr "遊俠"
+
+msgid "ROLE_ROG"
+msgstr "盜賊"
+
+msgid "ROLE_SAM"
+msgstr "武士"
+
+msgid "ROLE_TOU"
+msgstr "觀光客"
+
+msgid "ROLE_VAL"
+msgstr "女武神"
+
+msgid "ROLE_WIZ"
+msgstr "巫師"
+
+msgid "RACE_HUMAN"
+msgstr "人類"
+
+msgid "RACE_ELF"
+msgstr "精靈"
+
+msgid "RACE_DWARF"
+msgstr "矮人"
+
+msgid "RACE_GNOME"
+msgstr "地精"
+
+msgid "RACE_ORC"
+msgstr "獸人"
+
+msgid "GENDER_MALE"
+msgstr "男"
+
+msgid "GENDER_FEMALE"
+msgstr "女"
+
+msgid "ALIGN_LAWFUL"
+msgstr "守序"
+
+msgid "ALIGN_NEUTRAL"
+msgstr "中立"
+
+msgid "ALIGN_CHAOTIC"
+msgstr "混亂"
+
+msgid "COND_BAREH"
+msgstr "空手"
+
+msgid "COND_BLIND"
+msgstr "失明"
+
+msgid "COND_BUSY"
+msgstr "忙碌"
+
+msgid "COND_CONF"
+msgstr "混亂"
+
+msgid "COND_DEAF"
+msgstr "失聰"
+
+msgid "COND_ELF_IRON"
+msgstr "鐵灼傷"
+
+msgid "COND_FLY"
+msgstr "飛行"
+
+msgid "COND_FOODPOIS"
+msgstr "食物中毒"
+
+msgid "COND_GLOWHANDS"
+msgstr "發光之手"
+
+msgid "COND_GRAB"
+msgstr "被抓住"
+
+msgid "COND_HALLU"
+msgstr "幻覺"
+
+msgid "COND_HELD"
+msgstr "被抓住"
+
+msgid "COND_ICY"
+msgstr "冰上"
+
+msgid "COND_INLAVA"
+msgstr "陷入熔岩"
+
+msgid "COND_LEV"
+msgstr "懸浮"
+
+msgid "COND_PARLYZ"
+msgstr "麻痺"
+
+msgid "COND_RIDE"
+msgstr "騎乘"
+
+msgid "COND_SLEEPING"
+msgstr "睡眠"
+
+msgid "COND_SLIME"
+msgstr "黏液化"
+
+msgid "COND_SLIPPERY"
+msgstr "手指滑溜"
+
+msgid "COND_STONE"
+msgstr "石化中"
+
+msgid "COND_STRNGL"
+msgstr "窒息"
+
+msgid "COND_STUN"
+msgstr "暈眩"
+
+msgid "COND_SUBMERGED"
+msgstr "水中"
+
+msgid "COND_TERMILL"
+msgstr "重病"
+
+msgid "COND_TETHERED"
+msgstr "被拴住"
+
+msgid "COND_TRAPPED"
+msgstr "受困"
+
+msgid "COND_UNCONSC"
+msgstr "昏迷"
+
+msgid "COND_WOUNDEDL"
+msgstr "腿傷"
+
+msgid "COND_HOLDING"
+msgstr "抓住"
