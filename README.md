@@ -89,6 +89,25 @@ CI (`.github/workflows/ci.yml`) runs all of these steps on each OS. It
 uploads the Windows x86_64, macOS universal and Linux x86_64 builds as
 workflow artifacts.
 
+## Getting the Windows executable
+
+You don't need a compiler or Godot to play on Windows. CI builds the game on
+every push. `tools/fetch_build.py` downloads the newest successful build into
+a folder. It needs the GitHub CLI (`gh auth login`):
+
+```sh
+# The Windows build of the checked-out branch, into a folder of your choice
+python3 tools/fetch_build.py /path/to/folder
+# A given branch or platform; --force replaces files already in the folder
+python3 tools/fetch_build.py --branch main --platform linux --force /path/to/folder
+```
+
+The folder then holds `NetHackGodot.exe`, `NetHackGodot.pck` and the
+`libnethack.windows.*.dll` GDExtension. Keep them together and run
+`NetHackGodot.exe`. You can also download the `NetHackGodot-windows-x86_64`
+artifact from the CI run's page on GitHub. Artifacts expire after 90 days, so
+push again (or re-run CI) to get a fresh one.
+
 ## Architecture
 
 ```
@@ -163,6 +182,7 @@ a compatible licence and record it in `assets/LICENSES.md`.
 | Native, headless, fixed seed and scripted keys (plays, saves, then restores) | `python3 tools/stage_gamedir.py godot/nethack_data build/nhtest`<br>`build/<platform>/nethack_native_test --play build/nhtest --seed 42`<br>`build/<platform>/nethack_native_test --play build/nhtest --seed 42 --expect-restore` |
 | Glyph → tile coverage | `python3 tools/check_glyph_coverage.py build/GLYPHS.tsv godot/assets/tiles` |
 | Translation coverage | `python3 tools/check_translations.py` |
+| Tool unit tests (`tools/test_*.py`) | `python3 -m unittest discover -s tools -p "test_*.py"` |
 | Godot-side checks (translations, CJK font, atlases) | `godot --headless --path godot --import`<br>`godot --headless --path godot --script res://tests/run_tests.gd` |
 
 ## Licensing

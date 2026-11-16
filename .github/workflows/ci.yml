@@ -75,6 +75,9 @@ jobs:
       - name: Translation coverage test
         run: python tools/check_translations.py
 
+      - name: Tool unit tests
+        run: python -m unittest discover -s tools -p "test_*.py"
+
       - name: Upload native libraries
         uses: actions/upload-artifact@v7.0.2
         with:
