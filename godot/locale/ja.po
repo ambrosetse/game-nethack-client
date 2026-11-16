@@ -1,0 +1,376 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: NetHack Godot\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+
+msgid "GAME_TITLE"
+msgstr "NetHack"
+
+msgid "GAME_SUBTITLE"
+msgstr "古典ローグライクの Godot フロントエンド"
+
+msgid "GAME_PAUSED"
+msgstr "一時停止"
+
+msgid "GAME_RESUME"
+msgstr "再開"
+
+msgid "GAME_HELP"
+msgstr "ヘルプ"
+
+msgid "GAME_SAVE_QUIT"
+msgstr "セーブして終了"
+
+msgid "GAME_OVER"
+msgstr "ゲーム終了"
+
+msgid "GAME_BACK_TO_MENU"
+msgstr "メインメニューへ"
+
+msgid "MENU_CONTINUE"
+msgstr "続きから"
+
+msgid "MENU_NEW_GAME"
+msgstr "ニューゲーム"
+
+msgid "MENU_OPTIONS"
+msgstr "オプション"
+
+msgid "MENU_LANGUAGE"
+msgstr "言語"
+
+msgid "MENU_QUIT"
+msgstr "終了"
+
+msgid "CHARGEN_TITLE"
+msgstr "キャラクター選択"
+
+msgid "CHARGEN_NAME"
+msgstr "名前"
+
+msgid "CHARGEN_NAME_HINT"
+msgstr "空欄なら後で尋ねます"
+
+msgid "CHARGEN_ROLE"
+msgstr "職業"
+
+msgid "CHARGEN_RACE"
+msgstr "種族"
+
+msgid "CHARGEN_GENDER"
+msgstr "性別"
+
+msgid "CHARGEN_ALIGN"
+msgstr "属性"
+
+msgid "CHARGEN_RANDOM"
+msgstr "ランダム"
+
+msgid "CHARGEN_INVALID"
+msgstr "その組み合わせは選べません"
+
+msgid "CHARGEN_START"
+msgstr "開始"
+
+msgid "UI_BACK"
+msgstr "戻る"
+
+msgid "UI_CLOSE"
+msgstr "閉じる"
+
+msgid "UI_OK"
+msgstr "OK"
+
+msgid "UI_CANCEL"
+msgstr "キャンセル"
+
+msgid "ERROR_TITLE"
+msgstr "エラー"
+
+msgid "ERROR_NO_EXTENSION"
+msgstr "NetHack ネイティブ拡張が読み込まれていません。native/ をビルドして（README 参照）やり直してください。"
+
+msgid "ERROR_START_FAILED"
+msgstr "ゲームを開始できませんでした。"
+
+msgid "OPTIONS_TITLE"
+msgstr "オプション"
+
+msgid "OPTIONS_LANGUAGE"
+msgstr "言語"
+
+msgid "OPTIONS_RENDERER"
+msgstr "表示モード"
+
+msgid "OPTIONS_RENDERER_2D"
+msgstr "2D タイル"
+
+msgid "OPTIONS_RENDERER_3D"
+msgstr "3D"
+
+msgid "OPTIONS_MOVEMENT"
+msgstr "移動キー"
+
+msgid "OPTIONS_MOVEMENT_VI"
+msgstr "vi キー（hjklyubn）"
+
+msgid "OPTIONS_MOVEMENT_NUMPAD"
+msgstr "テンキー"
+
+msgid "OPTIONS_TILESET"
+msgstr "タイルセット"
+
+msgid "OPTIONS_TILESET_ORIGINAL"
+msgstr "オリジナル"
+
+msgid "OPTIONS_TILESET_CLASSIC"
+msgstr "クラシック（NetHack タイル）"
+
+msgid "OPTIONS_HINT"
+msgstr "ゲーム中は F2 で 2D/3D を切り替えます。移動キーは次のゲームから有効です。"
+
+msgid "HUD_MESSAGES"
+msgstr "メッセージ"
+
+msgid "HUD_HISTORY"
+msgstr "履歴"
+
+msgid "HUD_HISTORY_HINT"
+msgstr "過去のメッセージを表示（F5）"
+
+msgid "HUD_HP"
+msgstr "HP"
+
+msgid "HUD_PW"
+msgstr "魔力"
+
+msgid "HUD_DLVL"
+msgstr "階層"
+
+msgid "HUD_AC"
+msgstr "AC"
+
+msgid "HUD_LEVEL"
+msgstr "経験"
+
+msgid "HUD_GOLD"
+msgstr "金貨"
+
+msgid "HUD_TIME"
+msgstr "ターン"
+
+msgid "HUD_STR"
+msgstr "筋"
+
+msgid "HUD_DEX"
+msgstr "敏"
+
+msgid "HUD_CON"
+msgstr "耐"
+
+msgid "HUD_INT"
+msgstr "知"
+
+msgid "HUD_WIS"
+msgstr "賢"
+
+msgid "HUD_CHA"
+msgstr "魅"
+
+msgid "HUD_ALIGN"
+msgstr "属性"
+
+msgid "HUD_HUNGER"
+msgstr "空腹"
+
+msgid "HUD_ENCUMBRANCE"
+msgstr "重量"
+
+msgid "HUD_INVENTORY"
+msgstr "持ち物（F4）"
+
+msgid "DIALOG_ANY_KEY"
+msgstr "何かキーを押してください"
+
+msgid "DIALOG_YES"
+msgstr "はい"
+
+msgid "DIALOG_NO"
+msgstr "いいえ"
+
+msgid "DIALOG_QUIT"
+msgstr "やめる"
+
+msgid "DIALOG_ALL"
+msgstr "すべて"
+
+msgid "DIALOG_EXTCMD"
+msgstr "拡張コマンド"
+
+msgid "DIALOG_EXTCMD_HINT"
+msgstr "入力して絞り込み…"
+
+msgid "DIALOG_TOMBSTONE"
+msgstr "安らかに眠れ"
+
+msgid "ROLE_ARC"
+msgstr "考古学者"
+
+msgid "ROLE_BAR"
+msgstr "バーバリアン"
+
+msgid "ROLE_CAV"
+msgstr "洞窟人"
+
+msgid "ROLE_HEA"
+msgstr "ヒーラー"
+
+msgid "ROLE_KNI"
+msgstr "騎士"
+
+msgid "ROLE_MON"
+msgstr "モンク"
+
+msgid "ROLE_PRI"
+msgstr "僧侶"
+
+msgid "ROLE_RAN"
+msgstr "レンジャー"
+
+msgid "ROLE_ROG"
+msgstr "盗賊"
+
+msgid "ROLE_SAM"
+msgstr "侍"
+
+msgid "ROLE_TOU"
+msgstr "観光客"
+
+msgid "ROLE_VAL"
+msgstr "ワルキューレ"
+
+msgid "ROLE_WIZ"
+msgstr "魔法使い"
+
+msgid "RACE_HUMAN"
+msgstr "人間"
+
+msgid "RACE_ELF"
+msgstr "エルフ"
+
+msgid "RACE_DWARF"
+msgstr "ドワーフ"
+
+msgid "RACE_GNOME"
+msgstr "ノーム"
+
+msgid "RACE_ORC"
+msgstr "オーク"
+
+msgid "GENDER_MALE"
+msgstr "男性"
+
+msgid "GENDER_FEMALE"
+msgstr "女性"
+
+msgid "ALIGN_LAWFUL"
+msgstr "秩序"
+
+msgid "ALIGN_NEUTRAL"
+msgstr "中立"
+
+msgid "ALIGN_CHAOTIC"
+msgstr "混沌"
+
+msgid "COND_BAREH"
+msgstr "素手"
+
+msgid "COND_BLIND"
+msgstr "盲目"
+
+msgid "COND_BUSY"
+msgstr "作業中"
+
+msgid "COND_CONF"
+msgstr "混乱"
+
+msgid "COND_DEAF"
+msgstr "難聴"
+
+msgid "COND_ELF_IRON"
+msgstr "鉄の火傷"
+
+msgid "COND_FLY"
+msgstr "飛行"
+
+msgid "COND_FOODPOIS"
+msgstr "食中毒"
+
+msgid "COND_GLOWHANDS"
+msgstr "光る手"
+
+msgid "COND_GRAB"
+msgstr "掴まれ"
+
+msgid "COND_HALLU"
+msgstr "幻覚"
+
+msgid "COND_HELD"
+msgstr "拘束"
+
+msgid "COND_ICY"
+msgstr "氷上"
+
+msgid "COND_INLAVA"
+msgstr "溶岩の中"
+
+msgid "COND_LEV"
+msgstr "浮遊"
+
+msgid "COND_PARLYZ"
+msgstr "麻痺"
+
+msgid "COND_RIDE"
+msgstr "騎乗"
+
+msgid "COND_SLEEPING"
+msgstr "睡眠"
+
+msgid "COND_SLIME"
+msgstr "スライム化"
+
+msgid "COND_SLIPPERY"
+msgstr "滑る指"
+
+msgid "COND_STONE"
+msgstr "石化中"
+
+msgid "COND_STRNGL"
+msgstr "窒息"
+
+msgid "COND_STUN"
+msgstr "朦朧"
+
+msgid "COND_SUBMERGED"
+msgstr "水中"
+
+msgid "COND_TERMILL"
+msgstr "重病"
+
+msgid "COND_TETHERED"
+msgstr "繋がれ"
+
+msgid "COND_TRAPPED"
+msgstr "罠にかかり"
+
+msgid "COND_UNCONSC"
+msgstr "意識不明"
+
+msgid "COND_WOUNDEDL"
+msgstr "脚の負傷"
+
+msgid "COND_HOLDING"
+msgstr "掴んでいる"

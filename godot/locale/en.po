@@ -1,0 +1,376 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: NetHack Godot\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+msgid "GAME_TITLE"
+msgstr "NetHack"
+
+msgid "GAME_SUBTITLE"
+msgstr "A Godot frontend for the classic roguelike"
+
+msgid "GAME_PAUSED"
+msgstr "Paused"
+
+msgid "GAME_RESUME"
+msgstr "Resume"
+
+msgid "GAME_HELP"
+msgstr "Help"
+
+msgid "GAME_SAVE_QUIT"
+msgstr "Save and quit"
+
+msgid "GAME_OVER"
+msgstr "The game has ended"
+
+msgid "GAME_BACK_TO_MENU"
+msgstr "Back to main menu"
+
+msgid "MENU_CONTINUE"
+msgstr "Continue"
+
+msgid "MENU_NEW_GAME"
+msgstr "New game"
+
+msgid "MENU_OPTIONS"
+msgstr "Options"
+
+msgid "MENU_LANGUAGE"
+msgstr "Language"
+
+msgid "MENU_QUIT"
+msgstr "Quit"
+
+msgid "CHARGEN_TITLE"
+msgstr "Choose your character"
+
+msgid "CHARGEN_NAME"
+msgstr "Name"
+
+msgid "CHARGEN_NAME_HINT"
+msgstr "Leave empty to be asked"
+
+msgid "CHARGEN_ROLE"
+msgstr "Role"
+
+msgid "CHARGEN_RACE"
+msgstr "Race"
+
+msgid "CHARGEN_GENDER"
+msgstr "Gender"
+
+msgid "CHARGEN_ALIGN"
+msgstr "Alignment"
+
+msgid "CHARGEN_RANDOM"
+msgstr "Random"
+
+msgid "CHARGEN_INVALID"
+msgstr "That combination is not allowed"
+
+msgid "CHARGEN_START"
+msgstr "Start"
+
+msgid "UI_BACK"
+msgstr "Back"
+
+msgid "UI_CLOSE"
+msgstr "Close"
+
+msgid "UI_OK"
+msgstr "OK"
+
+msgid "UI_CANCEL"
+msgstr "Cancel"
+
+msgid "ERROR_TITLE"
+msgstr "Error"
+
+msgid "ERROR_NO_EXTENSION"
+msgstr "The NetHack native extension is not loaded. Build native/ (see README) and try again."
+
+msgid "ERROR_START_FAILED"
+msgstr "The game could not be started."
+
+msgid "OPTIONS_TITLE"
+msgstr "Options"
+
+msgid "OPTIONS_LANGUAGE"
+msgstr "Language"
+
+msgid "OPTIONS_RENDERER"
+msgstr "Renderer"
+
+msgid "OPTIONS_RENDERER_2D"
+msgstr "2D tiles"
+
+msgid "OPTIONS_RENDERER_3D"
+msgstr "3D"
+
+msgid "OPTIONS_MOVEMENT"
+msgstr "Movement keys"
+
+msgid "OPTIONS_MOVEMENT_VI"
+msgstr "vi-keys (hjklyubn)"
+
+msgid "OPTIONS_MOVEMENT_NUMPAD"
+msgstr "Number pad"
+
+msgid "OPTIONS_TILESET"
+msgstr "Tileset"
+
+msgid "OPTIONS_TILESET_ORIGINAL"
+msgstr "Original"
+
+msgid "OPTIONS_TILESET_CLASSIC"
+msgstr "Classic (NetHack tiles)"
+
+msgid "OPTIONS_HINT"
+msgstr "F2 switches 2D/3D in game. Movement keys apply to the next game."
+
+msgid "HUD_MESSAGES"
+msgstr "Messages"
+
+msgid "HUD_HISTORY"
+msgstr "History"
+
+msgid "HUD_HISTORY_HINT"
+msgstr "Show earlier messages (F5)"
+
+msgid "HUD_HP"
+msgstr "HP"
+
+msgid "HUD_PW"
+msgstr "Pw"
+
+msgid "HUD_DLVL"
+msgstr "Level"
+
+msgid "HUD_AC"
+msgstr "AC"
+
+msgid "HUD_LEVEL"
+msgstr "XP"
+
+msgid "HUD_GOLD"
+msgstr "Gold"
+
+msgid "HUD_TIME"
+msgstr "Turn"
+
+msgid "HUD_STR"
+msgstr "St"
+
+msgid "HUD_DEX"
+msgstr "Dx"
+
+msgid "HUD_CON"
+msgstr "Co"
+
+msgid "HUD_INT"
+msgstr "In"
+
+msgid "HUD_WIS"
+msgstr "Wi"
+
+msgid "HUD_CHA"
+msgstr "Ch"
+
+msgid "HUD_ALIGN"
+msgstr "Alignment"
+
+msgid "HUD_HUNGER"
+msgstr "Hunger"
+
+msgid "HUD_ENCUMBRANCE"
+msgstr "Load"
+
+msgid "HUD_INVENTORY"
+msgstr "Inventory (F4)"
+
+msgid "DIALOG_ANY_KEY"
+msgstr "Press any key"
+
+msgid "DIALOG_YES"
+msgstr "Yes"
+
+msgid "DIALOG_NO"
+msgstr "No"
+
+msgid "DIALOG_QUIT"
+msgstr "Quit"
+
+msgid "DIALOG_ALL"
+msgstr "All"
+
+msgid "DIALOG_EXTCMD"
+msgstr "Extended command"
+
+msgid "DIALOG_EXTCMD_HINT"
+msgstr "Type to filter..."
+
+msgid "DIALOG_TOMBSTONE"
+msgstr "Rest in peace"
+
+msgid "ROLE_ARC"
+msgstr "Archeologist"
+
+msgid "ROLE_BAR"
+msgstr "Barbarian"
+
+msgid "ROLE_CAV"
+msgstr "Caveman"
+
+msgid "ROLE_HEA"
+msgstr "Healer"
+
+msgid "ROLE_KNI"
+msgstr "Knight"
+
+msgid "ROLE_MON"
+msgstr "Monk"
+
+msgid "ROLE_PRI"
+msgstr "Priest"
+
+msgid "ROLE_RAN"
+msgstr "Ranger"
+
+msgid "ROLE_ROG"
+msgstr "Rogue"
+
+msgid "ROLE_SAM"
+msgstr "Samurai"
+
+msgid "ROLE_TOU"
+msgstr "Tourist"
+
+msgid "ROLE_VAL"
+msgstr "Valkyrie"
+
+msgid "ROLE_WIZ"
+msgstr "Wizard"
+
+msgid "RACE_HUMAN"
+msgstr "Human"
+
+msgid "RACE_ELF"
+msgstr "Elf"
+
+msgid "RACE_DWARF"
+msgstr "Dwarf"
+
+msgid "RACE_GNOME"
+msgstr "Gnome"
+
+msgid "RACE_ORC"
+msgstr "Orc"
+
+msgid "GENDER_MALE"
+msgstr "Male"
+
+msgid "GENDER_FEMALE"
+msgstr "Female"
+
+msgid "ALIGN_LAWFUL"
+msgstr "Lawful"
+
+msgid "ALIGN_NEUTRAL"
+msgstr "Neutral"
+
+msgid "ALIGN_CHAOTIC"
+msgstr "Chaotic"
+
+msgid "COND_BAREH"
+msgstr "Bare-handed"
+
+msgid "COND_BLIND"
+msgstr "Blind"
+
+msgid "COND_BUSY"
+msgstr "Busy"
+
+msgid "COND_CONF"
+msgstr "Confused"
+
+msgid "COND_DEAF"
+msgstr "Deaf"
+
+msgid "COND_ELF_IRON"
+msgstr "Iron burns"
+
+msgid "COND_FLY"
+msgstr "Flying"
+
+msgid "COND_FOODPOIS"
+msgstr "Food poisoning"
+
+msgid "COND_GLOWHANDS"
+msgstr "Glowing hands"
+
+msgid "COND_GRAB"
+msgstr "Grabbed"
+
+msgid "COND_HALLU"
+msgstr "Hallucinating"
+
+msgid "COND_HELD"
+msgstr "Held"
+
+msgid "COND_ICY"
+msgstr "On ice"
+
+msgid "COND_INLAVA"
+msgstr "In lava"
+
+msgid "COND_LEV"
+msgstr "Levitating"
+
+msgid "COND_PARLYZ"
+msgstr "Paralyzed"
+
+msgid "COND_RIDE"
+msgstr "Riding"
+
+msgid "COND_SLEEPING"
+msgstr "Asleep"
+
+msgid "COND_SLIME"
+msgstr "Slimed"
+
+msgid "COND_SLIPPERY"
+msgstr "Slippery fingers"
+
+msgid "COND_STONE"
+msgstr "Stoning"
+
+msgid "COND_STRNGL"
+msgstr "Strangled"
+
+msgid "COND_STUN"
+msgstr "Stunned"
+
+msgid "COND_SUBMERGED"
+msgstr "Underwater"
+
+msgid "COND_TERMILL"
+msgstr "Terminally ill"
+
+msgid "COND_TETHERED"
+msgstr "Tethered"
+
+msgid "COND_TRAPPED"
+msgstr "Trapped"
+
+msgid "COND_UNCONSC"
+msgstr "Unconscious"
+
+msgid "COND_WOUNDEDL"
+msgstr "Wounded legs"
+
+msgid "COND_HOLDING"
+msgstr "Holding"

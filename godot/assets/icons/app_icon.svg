@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Original app icon: a lit doorway in a stone wall with an @ adventurer. -->
+  <rect width="128" height="128" rx="20" fill="#1b1822"/>
+  <g fill="#4a4456">
+    <rect x="8" y="16" width="34" height="18" rx="2"/>
+    <rect x="86" y="16" width="34" height="18" rx="2"/>
+    <rect x="8" y="40" width="22" height="18" rx="2"/>
+    <rect x="98" y="40" width="22" height="18" rx="2"/>
+    <rect x="8" y="64" width="34" height="18" rx="2"/>
+    <rect x="86" y="64" width="34" height="18" rx="2"/>
+    <rect x="8" y="88" width="22" height="18" rx="2"/>
+    <rect x="98" y="88" width="22" height="18" rx="2"/>
+  </g>
+  <path d="M38 112 V52 a26 26 0 0 1 52 0 V112 Z" fill="#e8b04a"/>
+  <path d="M46 112 V54 a18 18 0 0 1 36 0 V112 Z" fill="#fbe3a0"/>
+  <circle cx="64" cy="66" r="8" fill="#2a2030"/>
+  <path d="M52 112 L56 80 h16 L76 112 Z" fill="#2a2030"/>
+  <path d="M78 74 L92 60" stroke="#c9d4e0" stroke-width="4" stroke-linecap="round"/>
+</svg>

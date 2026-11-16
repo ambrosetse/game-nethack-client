@@ -1,0 +1,19 @@
+glyph	symidx	color	ttychar	category	symname	name
+0	100	1	97	0	S_ant	giant ant
+1	100	1	97	1	S_ant	tame giant ant
+2	100	11	64	2	S_human	detected wizard
+3	200	3	41	7	S_weapon	long sword (pile)
+4	201	3	37	5	S_food	newt corpse
+5	102	7	39	6	S_golem	statue of newt
+6	1	7	124	8	S_vwall	wall
+7	1	3	124	8	S_vwall	wall (mines)
+8	19	7	46	8	S_room	floor of a room
+9	42	4	125	8	S_pool	water
+10	44	1	125	8	S_lava	molten lava
+11	60	9	124	9	S_vbeam	zap 1/0
+12	70	5	47	10	S_sw_tl	swallowed by giant ant (0)
+13	80	9	42	11	S_expl_tl	explosion 5/4
+14	90	1	51	12	S_warn3	warning level 3
+15	0	0	32	13	S_unexplored	unexplored
+16	0	0	32	14	S_nothing	nothing
+17	300	7	73	4	S_invisible	remembered unseen monster

@@ -1,0 +1,127 @@
+# UI string table: key|en|zh_TW|zh_CN|ko|ja
+# Source of truth for godot/locale/*.po - regenerate with tools/build_locale.py.
+# Only frontend UI strings live here; NetHack core messages stay English and
+# pass through Session.core_text() (see README "Adding a language").
+GAME_TITLE|NetHack|NetHack|NetHack|NetHack|NetHack
+GAME_SUBTITLE|A Godot frontend for the classic roguelike|經典 Roguelike 的 Godot 前端|经典 Roguelike 的 Godot 前端|고전 로그라이크의 Godot 프런트엔드|古典ローグライクの Godot フロントエンド
+GAME_PAUSED|Paused|已暫停|已暂停|일시 정지|一時停止
+GAME_RESUME|Resume|繼續遊戲|继续游戏|계속하기|再開
+GAME_HELP|Help|說明|帮助|도움말|ヘルプ
+GAME_SAVE_QUIT|Save and quit|存檔並離開|保存并退出|저장 후 종료|セーブして終了
+GAME_OVER|The game has ended|遊戲結束|游戏结束|게임이 끝났습니다|ゲーム終了
+GAME_BACK_TO_MENU|Back to main menu|返回主選單|返回主菜单|메인 메뉴로|メインメニューへ
+MENU_CONTINUE|Continue|繼續|继续|이어하기|続きから
+MENU_NEW_GAME|New game|新遊戲|新游戏|새 게임|ニューゲーム
+MENU_OPTIONS|Options|選項|选项|옵션|オプション
+MENU_LANGUAGE|Language|語言|语言|언어|言語
+MENU_QUIT|Quit|離開|退出|종료|終了
+CHARGEN_TITLE|Choose your character|選擇你的角色|选择你的角色|캐릭터 선택|キャラクター選択
+CHARGEN_NAME|Name|名字|名字|이름|名前
+CHARGEN_NAME_HINT|Leave empty to be asked|留空則稍後詢問|留空则稍后询问|비워 두면 나중에 묻습니다|空欄なら後で尋ねます
+CHARGEN_ROLE|Role|職業|职业|직업|職業
+CHARGEN_RACE|Race|種族|种族|종족|種族
+CHARGEN_GENDER|Gender|性別|性别|성별|性別
+CHARGEN_ALIGN|Alignment|陣營|阵营|성향|属性
+CHARGEN_RANDOM|Random|隨機|随机|무작위|ランダム
+CHARGEN_INVALID|That combination is not allowed|此組合不可用|此组合不可用|허용되지 않는 조합입니다|その組み合わせは選べません
+CHARGEN_START|Start|開始|开始|시작|開始
+UI_BACK|Back|返回|返回|뒤로|戻る
+UI_CLOSE|Close|關閉|关闭|닫기|閉じる
+UI_OK|OK|確定|确定|확인|OK
+UI_CANCEL|Cancel|取消|取消|취소|キャンセル
+ERROR_TITLE|Error|錯誤|错误|오류|エラー
+ERROR_NO_EXTENSION|The NetHack native extension is not loaded. Build native/ (see README) and try again.|未載入 NetHack 原生擴充。請先建置 native/（見 README）後再試。|未加载 NetHack 原生扩展。请先构建 native/（见 README）后再试。|NetHack 네이티브 확장이 로드되지 않았습니다. native/를 빌드한 뒤(README 참고) 다시 시도하세요.|NetHack ネイティブ拡張が読み込まれていません。native/ をビルドして（README 参照）やり直してください。
+ERROR_START_FAILED|The game could not be started.|無法開始遊戲。|无法开始游戏。|게임을 시작할 수 없습니다.|ゲームを開始できませんでした。
+OPTIONS_TITLE|Options|選項|选项|옵션|オプション
+OPTIONS_LANGUAGE|Language|語言|语言|언어|言語
+OPTIONS_RENDERER|Renderer|繪製模式|渲染模式|렌더러|表示モード
+OPTIONS_RENDERER_2D|2D tiles|2D 圖塊|2D 图块|2D 타일|2D タイル
+OPTIONS_RENDERER_3D|3D|3D|3D|3D|3D
+OPTIONS_MOVEMENT|Movement keys|移動按鍵|移动按键|이동 키|移動キー
+OPTIONS_MOVEMENT_VI|vi-keys (hjklyubn)|vi 鍵（hjklyubn）|vi 键（hjklyubn）|vi 키 (hjklyubn)|vi キー（hjklyubn）
+OPTIONS_MOVEMENT_NUMPAD|Number pad|數字鍵盤|数字键盘|숫자 키패드|テンキー
+OPTIONS_TILESET|Tileset|圖塊集|图块集|타일셋|タイルセット
+OPTIONS_TILESET_ORIGINAL|Original|原創|原创|오리지널|オリジナル
+OPTIONS_TILESET_CLASSIC|Classic (NetHack tiles)|經典（NetHack 圖塊）|经典（NetHack 图块）|클래식 (NetHack 타일)|クラシック（NetHack タイル）
+OPTIONS_HINT|F2 switches 2D/3D in game. Movement keys apply to the next game.|遊戲中按 F2 切換 2D/3D。移動按鍵於下一局生效。|游戏中按 F2 切换 2D/3D。移动按键于下一局生效。|게임 중 F2로 2D/3D를 전환합니다. 이동 키는 다음 게임부터 적용됩니다.|ゲーム中は F2 で 2D/3D を切り替えます。移動キーは次のゲームから有効です。
+HUD_MESSAGES|Messages|訊息|消息|메시지|メッセージ
+HUD_HISTORY|History|歷史|历史|기록|履歴
+HUD_HISTORY_HINT|Show earlier messages (F5)|顯示先前訊息（F5）|显示先前消息（F5）|이전 메시지 보기 (F5)|過去のメッセージを表示（F5）
+HUD_HP|HP|生命|生命|HP|HP
+HUD_PW|Pw|魔力|魔力|마력|魔力
+HUD_DLVL|Level|層數|层数|층|階層
+HUD_AC|AC|防禦|防御|AC|AC
+HUD_LEVEL|XP|經驗|经验|경험|経験
+HUD_GOLD|Gold|金幣|金币|금화|金貨
+HUD_TIME|Turn|回合|回合|턴|ターン
+HUD_STR|St|力|力|힘|筋
+HUD_DEX|Dx|敏|敏|민|敏
+HUD_CON|Co|體|体|체|耐
+HUD_INT|In|智|智|지|知
+HUD_WIS|Wi|感|感|지혜|賢
+HUD_CHA|Ch|魅|魅|매|魅
+HUD_ALIGN|Alignment|陣營|阵营|성향|属性
+HUD_HUNGER|Hunger|飢餓|饥饿|배고픔|空腹
+HUD_ENCUMBRANCE|Load|負重|负重|짐|重量
+HUD_INVENTORY|Inventory (F4)|物品（F4）|物品（F4）|소지품 (F4)|持ち物（F4）
+DIALOG_ANY_KEY|Press any key|按任意鍵|按任意键|아무 키나 누르세요|何かキーを押してください
+DIALOG_YES|Yes|是|是|예|はい
+DIALOG_NO|No|否|否|아니요|いいえ
+DIALOG_QUIT|Quit|離開|退出|그만|やめる
+DIALOG_ALL|All|全部|全部|전부|すべて
+DIALOG_EXTCMD|Extended command|擴充指令|扩展命令|확장 명령|拡張コマンド
+DIALOG_EXTCMD_HINT|Type to filter...|輸入以篩選…|输入以筛选…|입력하여 필터…|入力して絞り込み…
+DIALOG_TOMBSTONE|Rest in peace|安息吧|安息吧|고이 잠드소서|安らかに眠れ
+ROLE_ARC|Archeologist|考古學家|考古学家|고고학자|考古学者
+ROLE_BAR|Barbarian|野蠻人|野蛮人|야만인|バーバリアン
+ROLE_CAV|Caveman|穴居人|穴居人|원시인|洞窟人
+ROLE_HEA|Healer|醫者|医者|치유사|ヒーラー
+ROLE_KNI|Knight|騎士|骑士|기사|騎士
+ROLE_MON|Monk|武僧|武僧|수도사|モンク
+ROLE_PRI|Priest|祭司|祭司|사제|僧侶
+ROLE_RAN|Ranger|遊俠|游侠|레인저|レンジャー
+ROLE_ROG|Rogue|盜賊|盗贼|도적|盗賊
+ROLE_SAM|Samurai|武士|武士|사무라이|侍
+ROLE_TOU|Tourist|觀光客|观光客|관광객|観光客
+ROLE_VAL|Valkyrie|女武神|女武神|발키리|ワルキューレ
+ROLE_WIZ|Wizard|巫師|巫师|마법사|魔法使い
+RACE_HUMAN|Human|人類|人类|인간|人間
+RACE_ELF|Elf|精靈|精灵|엘프|エルフ
+RACE_DWARF|Dwarf|矮人|矮人|드워프|ドワーフ
+RACE_GNOME|Gnome|地精|地精|노움|ノーム
+RACE_ORC|Orc|獸人|兽人|오크|オーク
+GENDER_MALE|Male|男|男|남성|男性
+GENDER_FEMALE|Female|女|女|여성|女性
+ALIGN_LAWFUL|Lawful|守序|守序|질서|秩序
+ALIGN_NEUTRAL|Neutral|中立|中立|중립|中立
+ALIGN_CHAOTIC|Chaotic|混亂|混乱|혼돈|混沌
+COND_BAREH|Bare-handed|空手|空手|맨손|素手
+COND_BLIND|Blind|失明|失明|실명|盲目
+COND_BUSY|Busy|忙碌|忙碌|바쁨|作業中
+COND_CONF|Confused|混亂|混乱|혼란|混乱
+COND_DEAF|Deaf|失聰|失聪|청각 상실|難聴
+COND_ELF_IRON|Iron burns|鐵灼傷|铁灼伤|철 화상|鉄の火傷
+COND_FLY|Flying|飛行|飞行|비행|飛行
+COND_FOODPOIS|Food poisoning|食物中毒|食物中毒|식중독|食中毒
+COND_GLOWHANDS|Glowing hands|發光之手|发光之手|빛나는 손|光る手
+COND_GRAB|Grabbed|被抓住|被抓住|붙잡힘|掴まれ
+COND_HALLU|Hallucinating|幻覺|幻觉|환각|幻覚
+COND_HELD|Held|被抓住|被抓住|붙들림|拘束
+COND_ICY|On ice|冰上|冰上|빙판|氷上
+COND_INLAVA|In lava|陷入熔岩|陷入熔岩|용암 속|溶岩の中
+COND_LEV|Levitating|懸浮|悬浮|공중 부양|浮遊
+COND_PARLYZ|Paralyzed|麻痺|麻痹|마비|麻痺
+COND_RIDE|Riding|騎乘|骑乘|탑승|騎乗
+COND_SLEEPING|Asleep|睡眠|睡眠|수면|睡眠
+COND_SLIME|Slimed|黏液化|黏液化|슬라임화|スライム化
+COND_SLIPPERY|Slippery fingers|手指滑溜|手指滑溜|미끄러운 손|滑る指
+COND_STONE|Stoning|石化中|石化中|석화 중|石化中
+COND_STRNGL|Strangled|窒息|窒息|질식|窒息
+COND_STUN|Stunned|暈眩|晕眩|기절|朦朧
+COND_SUBMERGED|Underwater|水中|水中|수중|水中
+COND_TERMILL|Terminally ill|重病|重病|중병|重病
+COND_TETHERED|Tethered|被拴住|被拴住|묶임|繋がれ
+COND_TRAPPED|Trapped|受困|受困|갇힘|罠にかかり
+COND_UNCONSC|Unconscious|昏迷|昏迷|의식 불명|意識不明
+COND_WOUNDEDL|Wounded legs|腿傷|腿伤|다리 부상|脚の負傷
+COND_HOLDING|Holding|抓住|抓住|붙잡는 중|掴んでいる

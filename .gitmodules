@@ -1,0 +1,7 @@
+[submodule "thirdparty/NetHack"]
+	path = thirdparty/NetHack
+	url = https://github.com/NetHack/NetHack.git
+	branch = NetHack-5.0
+[submodule "thirdparty/godot-cpp"]
+	path = thirdparty/godot-cpp
+	url = https://github.com/godotengine/godot-cpp.git
