@@ -69,7 +69,9 @@ func _check_save_names() -> void:
 		["A.NetHack-saved-game", "B", false],
 		["Mr%20X.NetHack-saved-game", "Mr X", true],
 		["p1.NetHack-saved-game", "p1", true],
-		["%FFFFFFC3%FFFFFFA9.NetHack-saved-game", "é", true],
+		["%FF%FFFFFFA9.NetHack-saved-game", "é", true],
+		["%FF%FFa.NetHack-saved-game", "éa", true],
+		["%FFFFFFC3%FFFFFFA9.NetHack-saved-game", "é", false],
 		["Bob.NetHack-saved-game", "Bob-Val", true],
 	]
 	for c in cases:

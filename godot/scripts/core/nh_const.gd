@@ -204,15 +204,19 @@ static func is_save_for(file: String, name: String) -> bool:
 
 
 ## fname_encode(legal, '%', name): other bytes become %XX.  The byte goes
-## through a signed char into "%02X", so bytes >= 0x80 print as FFFFFFXX.
+## through a signed char into "%02X", so a byte >= 0x80 prints as
+## "%FFFFFFXX"; fname_encode() still moves on by only 3 characters, so
+## whatever comes next overwrites all but "%FF" of it.
 static func _win_save_stem(n: String) -> String:
 	var out := ""
-	for b in n.to_utf8_buffer():
+	var bytes := n.to_utf8_buffer()
+	for i in bytes.size():
+		var b := bytes[i]
 		var ch := char(b)
 		if b < 0x80 and ch != "%" and WIN_SAVE_OK.contains(ch):
 			out += ch
 		elif b >= 0x80:
-			out += "%%FFFFFF%02X" % b
+			out += "%%FFFFFF%02X" % b if i == bytes.size() - 1 else "%FF"
 		else:
 			out += "%%%02X" % b
 	return out
