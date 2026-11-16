@@ -63,12 +63,13 @@ func game_dir_path() -> String:
 	return ProjectSettings.globalize_path(GAME_DIR)
 
 
-func has_save() -> bool:
+## True when there is a save NetHack would restore for player `name`.
+func has_save(name: String) -> bool:
 	var dir := DirAccess.open(GAME_DIR + "/save")
 	if dir == null:
 		return false
 	for f in dir.get_files():
-		if not f.begins_with("."):
+		if NhConst.is_save_for(f, name):
 			return true
 	return false
 

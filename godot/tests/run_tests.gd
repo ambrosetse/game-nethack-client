@@ -10,7 +10,8 @@ extends SceneTree
 ##    by the translations;
 ## 3. glyph -> tile coverage: when the GDExtension is loaded, both tile atlases
 ##    map every glyph of the core's glyph table to a cell inside the atlas;
-## 4. player-name cleaning (see _check_player_name).
+## 4. player-name cleaning (see _check_player_name);
+## 5. save-file matching for Continue (see _check_save_names).
 ##
 ## Exit status 0 = pass.
 
@@ -27,6 +28,7 @@ func _init() -> void:
 	_check_font(translations)
 	_check_glyph_coverage()
 	_check_player_name()
+	_check_save_names()
 	print("PASSED" if failures == 0 else "FAILED (%d)" % failures)
 	quit(1 if failures else 0)
 
@@ -45,6 +47,38 @@ func _check_player_name() -> void:
 		var got := NhConst.clean_player_name(k)
 		if got != cases[k]:
 			_fail("clean_player_name(%s) = %s, want %s" % [k, got, cases[k]])
+
+
+## 5. Continue: a save only counts for the player name NetHack restores it
+##    for (set_savefile_name() in src/files.c, Unix and Windows forms).
+func _check_save_names() -> void:
+	var cases := [
+		# [file, name, expected]
+		["1000A", "A", true],
+		["1000A", "B", false],
+		["1000AB", "B", false],
+		["1000B", "B", true],
+		["A", "A", false],
+		["x1000A", "A", false],
+		["1000Mr_X", "Mr X", true],
+		["1000a_b", "a.b", true],
+		["1000Bob", "Bob-Val-hum", true],
+		["1000Bob", "Bob,", true],
+		["1000Bob", "", false],
+		["A.NetHack-saved-game", "A", true],
+		["A.NetHack-saved-game", "B", false],
+		["Mr%20X.NetHack-saved-game", "Mr X", true],
+		["p1.NetHack-saved-game", "p1", true],
+		["%FFFFFFC3%FFFFFFA9.NetHack-saved-game", "é", true],
+		["Bob.NetHack-saved-game", "Bob-Val", true],
+	]
+	for c in cases:
+		var got := NhConst.is_save_for(c[0], c[1])
+		if got != c[2]:
+			_fail("is_save_for(%s, %s) = %s, want %s" % [c[0], c[1], got, c[2]])
+	var long := "abcdefghijklmnopqrstuvwxyz0123456789"
+	if NhConst.core_player_name(long) != long.substr(0, NhConst.PL_NSIZ - 1):
+		_fail("core_player_name does not cut at PL_NSIZ - 1 bytes")
 
 
 func _fail(msg: String) -> void:

@@ -194,7 +194,9 @@ func _show(which: String) -> void:
 	_chargen.visible = which == "chargen"
 	_options.visible = which == "options"
 	_language.visible = which == "language"
-	_continue.disabled = not Session.has_save() or Settings.player_name.is_empty()
+	# NetHack only restores the save of the name it is given, so Continue
+	# is offered only when that name has one.
+	_continue.disabled = not Session.has_save(Settings.player_name)
 	if which == "chargen":
 		_name.grab_focus()
 

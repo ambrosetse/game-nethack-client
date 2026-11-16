@@ -165,6 +165,59 @@ static func clean_player_name(s: String) -> String:
 	return out.strip_edges()
 
 
+## NetHack's PL_NSIZ: plname[] holds at most PL_NSIZ - 1 bytes.
+const PL_NSIZ := 32
+const WIN_SAVE_EXT := ".NetHack-saved-game"
+## fname_encode()'s legal characters in set_savefile_name() (WIN32); hex
+## digits are also kept as they are.
+const WIN_SAVE_OK := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-.0123456789"
+
+
+## The name the core keeps for a player name: cleaned, cut to PL_NSIZ - 1
+## bytes, and cut at the first '-' (plnamesuffix() reads what follows as
+## -role-race-gender-align).
+static func core_player_name(s: String) -> String:
+	var bytes := clean_player_name(s).to_utf8_buffer()
+	if bytes.size() > PL_NSIZ - 1:
+		bytes = bytes.slice(0, PL_NSIZ - 1)
+	var dash := bytes.find("-".unicode_at(0))
+	if dash >= 0:
+		bytes = bytes.slice(0, dash)
+	return bytes.get_string_from_utf8()
+
+
+## True when `file` (a name in <game_dir>/save/) is the save NetHack restores
+## for player `name`.  See set_savefile_name() in src/files.c:
+##   UNIX:  "<uid><name>" with '.', '/' and ' ' replaced by '_'
+##   WIN32: fname_encode(name) + ".NetHack-saved-game"
+static func is_save_for(file: String, name: String) -> bool:
+	var n := core_player_name(name)
+	if n.is_empty():
+		return false
+	if file.ends_with(WIN_SAVE_EXT):
+		return file.trim_suffix(WIN_SAVE_EXT) == _win_save_stem(n)
+	var reg := n.replace(".", "_").replace("/", "_").replace(" ", "_")
+	if not file.ends_with(reg) or file.length() == reg.length():
+		return false
+	# what is left is the uid: digits only
+	return file.substr(0, file.length() - reg.length()).lstrip("0123456789").is_empty()
+
+
+## fname_encode(legal, '%', name): other bytes become %XX.  The byte goes
+## through a signed char into "%02X", so bytes >= 0x80 print as FFFFFFXX.
+static func _win_save_stem(n: String) -> String:
+	var out := ""
+	for b in n.to_utf8_buffer():
+		var ch := char(b)
+		if b < 0x80 and ch != "%" and WIN_SAVE_OK.contains(ch):
+			out += ch
+		elif b >= 0x80:
+			out += "%%FFFFFF%02X" % b
+		else:
+			out += "%%%02X" % b
+	return out
+
+
 ## Return true when role/race/gender/align is a combination NetHack allows.
 ## "random" matches anything.
 static func valid_combo(role: String, race: String, gender: String, align: String) -> bool:
