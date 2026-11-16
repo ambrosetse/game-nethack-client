@@ -60,13 +60,16 @@ jobs:
       - name: Native test - restore the save
         run: build/${{ matrix.platform }}/nethack_native_test --play build/nhtest --seed 42 --expect-restore
 
-      - name: Generate tilesets
+      - name: Regenerate tilesets into a scratch directory
         run: |
           build/${{ matrix.platform }}/nethack_native_test --dump-glyphs build/GLYPHS.tsv
-          python tools/make_tileset.py build/GLYPHS.tsv godot/assets/tiles
-          python tools/convert_share_tiles.py build/GLYPHS.tsv thirdparty/NetHack/win/share godot/assets/tiles
+          python tools/make_tileset.py build/GLYPHS.tsv build/tiles-regen
+          python tools/convert_share_tiles.py build/GLYPHS.tsv thirdparty/NetHack/win/share build/tiles-regen
 
-      - name: Glyph -> tile coverage test
+      - name: Committed tilesets match the regeneration
+        run: python tools/check_tiles_current.py godot/assets/tiles build/tiles-regen
+
+      - name: Glyph -> tile coverage test (committed tilesets)
         run: python tools/check_glyph_coverage.py build/GLYPHS.tsv godot/assets/tiles
 
       - name: Translation coverage test
@@ -79,14 +82,12 @@ jobs:
           path: godot/bin/
           if-no-files-found: error
 
-      - name: Upload generated assets
+      - name: Upload staged NetHack data
         if: matrix.platform == 'linux'
         uses: actions/upload-artifact@v7.0.2
         with:
           name: generated-assets
-          path: |
-            godot/assets/tiles/
-            godot/nethack_data/
+          path: godot/nethack_data/
           if-no-files-found: error
 
   export:
@@ -107,11 +108,13 @@ jobs:
           path: godot/bin
           merge-multiple: true
 
-      - name: Download generated assets
+      # The artifact holds the contents of godot/nethack_data/ (single upload
+      # path, so it is the artifact root); the tilesets come from the checkout.
+      - name: Download staged NetHack data
         uses: actions/download-artifact@v8.0.2
         with:
           name: generated-assets
-          path: godot
+          path: godot/nethack_data
 
       - name: Fetch CJK font (pinned, checksum-verified)
         run: python tools/fetch_fonts.py

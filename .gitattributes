@@ -1,0 +1,3 @@
+# Committed generated tilesets: keep them byte-identical on every OS.
+*.png binary
+godot/assets/tiles/*.json text eol=lf

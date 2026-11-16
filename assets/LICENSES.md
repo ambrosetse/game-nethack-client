@@ -8,8 +8,8 @@ together with NGPL code.
 
 | Asset | Where it lives | Source | Licence |
 |---|---|---|---|
-| Original 2D tileset (`tiles.png`, `glyph_map.json`) | generated into `godot/assets/tiles/` | Drawn procedurally by `tools/make_tileset.py` from the glyph table dumped by `nethack_native_test --dump-glyphs`.  No third-party artwork is used. | CC0 1.0 (public domain dedication) |
-| Classic 2D tileset (`tiles_classic.png`, `glyph_map_classic.json`) | generated into `godot/assets/tiles/` | Converted by `tools/convert_share_tiles.py` from NetHack's `win/share/monsters.txt`, `objects.txt` and `other.txt` (the pinned submodule). | NGPL (same as NetHack) |
+| Original 2D tileset (`tiles.png`, `glyph_map.json`) | committed in `godot/assets/tiles/` | Drawn procedurally by `tools/make_tileset.py` from the glyph table dumped by `nethack_native_test --dump-glyphs`.  No third-party artwork is used. | CC0 1.0 (public domain dedication) |
+| Classic 2D tileset (`tiles_classic.png`, `glyph_map_classic.json`) | committed in `godot/assets/tiles/` | Converted by `tools/convert_share_tiles.py` from NetHack's `win/share/monsters.txt`, `objects.txt` and `other.txt` (the pinned submodule). | NGPL (same as NetHack) |
 | 3D materials (`wall`, `floor`, `corridor`, `door`, `door_open`, `stairs`, `water`, `lava`, `tree`) | `godot/assets/3d/*.tres` | Hand-written Godot `StandardMaterial3D` resources using flat colours only; meshes are Godot primitives created in `map_view_3d.gd`. | CC0 1.0 |
 | Application icon | `godot/assets/icons/app_icon.svg` | Hand-written SVG, original to this project. | CC0 1.0 |
 | UI theme | `godot/assets/ui/theme.tres` | Hand-written `StyleBoxFlat` theme. | CC0 1.0 |
@@ -25,15 +25,20 @@ together with NGPL code.
 | godot-cpp | 10.0.0-stable (`507ed9d`) | MIT |
 | Godot Engine (runtime, export templates) | 4.7.2-stable | MIT |
 
-## Regenerating the generated assets
+## Regenerating the tilesets
+
+The tilesets are committed, and CI fails when a fresh regeneration differs
+from them (`tools/check_tiles_current.py`).  After changing the glyph table or
+a tile tool, regenerate them and commit the result:
 
 ```sh
 build/<platform>/nethack_native_test --dump-glyphs build/GLYPHS.tsv
 python3 tools/make_tileset.py build/GLYPHS.tsv godot/assets/tiles
 python3 tools/convert_share_tiles.py build/GLYPHS.tsv thirdparty/NetHack/win/share godot/assets/tiles
 python3 tools/check_glyph_coverage.py build/GLYPHS.tsv godot/assets/tiles
-python3 tools/fetch_fonts.py
 ```
+
+The CJK font is not committed; `python3 tools/fetch_fonts.py` fetches it.
 
 Anyone adding artwork must add a row above with its source and licence;
 only CC0, CC-BY, OFL, MIT/BSD or NGPL material is accepted.
