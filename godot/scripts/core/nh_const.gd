@@ -168,6 +168,8 @@ static func clean_player_name(s: String) -> String:
 ## NetHack's PL_NSIZ: plname[] holds at most PL_NSIZ - 1 bytes.
 const PL_NSIZ := 32
 const WIN_SAVE_EXT := ".NetHack-saved-game"
+## COMPRESS_EXTENSION under ZLIB_COMP (src/files.c).
+const SAVE_COMPRESS_EXT := ".gz"
 ## fname_encode()'s legal characters in set_savefile_name() (WIN32); hex
 ## digits are also kept as they are.
 const WIN_SAVE_OK := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-.0123456789"
@@ -190,10 +192,13 @@ static func core_player_name(s: String) -> String:
 ## for player `name`.  See set_savefile_name() in src/files.c:
 ##   UNIX:  "<uid><name>" with '.', '/' and ' ' replaced by '_'
 ##   WIN32: fname_encode(name) + ".NetHack-saved-game"
-static func is_save_for(file: String, name: String) -> bool:
+## The core is built with ZLIB_COMP, so docompress_file() renames the save to
+## that name + ".gz"; restore also tries the uncompressed name, so both count.
+static func is_save_for(save_file: String, name: String) -> bool:
 	var n := core_player_name(name)
 	if n.is_empty():
 		return false
+	var file := save_file.trim_suffix(SAVE_COMPRESS_EXT)
 	if file.ends_with(WIN_SAVE_EXT):
 		return file.trim_suffix(WIN_SAVE_EXT) == _win_save_stem(n)
 	var reg := n.replace(".", "_").replace("/", "_").replace(" ", "_")

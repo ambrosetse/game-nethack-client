@@ -73,6 +73,17 @@ func _check_save_names() -> void:
 		["%FF%FFa.NetHack-saved-game", "éa", true],
 		["%FFFFFFC3%FFFFFFA9.NetHack-saved-game", "é", false],
 		["Bob.NetHack-saved-game", "Bob-Val", true],
+		# ZLIB_COMP builds: docompress_file() appends ".gz"
+		["1000A.gz", "A", true],
+		["1000A.gz", "B", false],
+		["1000Mr_X.gz", "Mr X", true],
+		["1000a_gz.gz", "a.gz", true],
+		["1000a_gz", "a.gz", true],
+		["A.gz", "A", false],
+		[".gz", "A", false],
+		["A.NetHack-saved-game.gz", "A", true],
+		["A.NetHack-saved-game.gz", "B", false],
+		["a.gz.NetHack-saved-game.gz", "a.gz", true],
 	]
 	for c in cases:
 		var got := NhConst.is_save_for(c[0], c[1])
