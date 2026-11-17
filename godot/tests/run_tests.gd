@@ -17,7 +17,9 @@ extends SceneTree
 ##    dialogs stay centred (within 4px) before and after a window resize,
 ##    the map is visible with its camera current after the first map draw
 ##    (no F2), keys reach Session.send_key with the HUD present, and map
-##    clicks step or travel.
+##    clicks step or travel;
+## 8. y/n questions: buttons from the core's choices or the prompt, and the
+##    keyboard only restricted by the core's own choices.
 ##
 ## Exit status 0 = pass.
 
@@ -27,6 +29,8 @@ const TileAtlas = preload("res://scripts/game/tile_atlas.gd")
 const NhConst = preload("res://scripts/core/nh_const.gd")
 const CoreText = preload("res://scripts/core/core_text.gd")
 const FakeGame = preload("res://tests/fake_game.gd")
+# loaded at run time: dialogs.gd uses the Session autoload
+const DIALOGS := "res://scripts/ui/dialogs.gd"
 const GAME_ROOT := "res://scripts/game/game_root.gd"
 
 var failures := 0
@@ -45,6 +49,7 @@ func _run() -> void:
 	_check_player_name()
 	_check_save_names()
 	_check_core_text()
+	_check_yn_choices()
 	await _check_game_scene()
 	print("PASSED" if failures == 0 else "FAILED (%d)" % failures)
 	quit(1 if failures else 0)
@@ -70,6 +75,42 @@ func _check_core_text() -> void:
 	print("core text: %d cases" % cases.size())
 
 
+## 8. y/n questions: the buttons offered and the keys the keyboard accepts.
+func _check_yn_choices() -> void:
+	var Dialogs := load(DIALOGS) as GDScript
+	if Dialogs == null:
+		_fail("cannot load %s" % DIALOGS)
+		return
+	var cases := [
+		# [prompt, s2, expected buttons]
+		["Really quit?", "ynq", "ynq"],
+		["Shall I pick a character for you? [ynaq]", "", "ynaq"],
+		["What do you want to throw? [a-c or ?*]", "", "abc?*"],
+		["What do you want to eat? [fg or ?*]", "", "fg?*"],
+		["What do you want to wield? [- ab or ?*]", "", ""],
+		["Call it:", "", ""],
+		["Continue?", "yn\u001bq", "yn"],
+	]
+	for c in cases:
+		var got: String = Dialogs.yn_choices(c[0], c[1])
+		if got != c[2]:
+			_fail("yn_choices(%s, %s) = %s, want %s" % [c[0], c[1].c_escape(), got, c[2]])
+	var keys := [
+		# [s2, key, accepted]
+		["ynq", "y", true],
+		["ynq", "x", false],
+		["ynq", "?", false],
+		["", "?", true],
+		["", "*", true],
+		["", "3", true],
+		["", "z", true],
+	]
+	for k in keys:
+		if Dialogs.yn_accepts(k[0], k[1]) != k[2]:
+			_fail("yn_accepts(%s, %s) != %s" % [k[0], k[1], k[2]])
+	print("y/n choices: %d cases" % (cases.size() + keys.size()))
+
+
 ## 7. the game scene with a fake native game.
 func _check_game_scene() -> void:
 	var session: Node = root.get_node_or_null("Session")
@@ -93,6 +134,7 @@ func _check_game_scene() -> void:
 	await _check_dialog_centring(gr, session)
 	await _check_first_draw(gr, model)
 	await _check_keys(gr, session, fake)
+	await _check_yn_keys(gr, session, fake)
 	await _check_clicks(gr, session, fake)
 	gr.queue_free()
 	await process_frame
@@ -206,6 +248,36 @@ func _check_keys(gr: Node, session: Node, fake) -> void:
 		_fail("%s keeps keyboard focus" % focused.name)
 	session.pending_request = {}
 	print("keys: %d cases reach Session.send_key" % cases.size())
+
+
+## Keys typed into an open y/n dialog: getobj prompts (no choice string) take
+## any key, a [yn] question only its own answers (Escape always cancels).
+func _check_yn_keys(gr: Node, session: Node, fake) -> void:
+	var cases := [
+		# [prompt, s2, keycode, unicode, expected keys]
+		["What do you want to eat? [fg or ?*]", "", KEY_QUESTION, "?".unicode_at(0), ["?".unicode_at(0)]],
+		["What do you want to eat? [fg or ?*]", "", KEY_ASTERISK, "*".unicode_at(0), ["*".unicode_at(0)]],
+		["What do you want to eat? [fg or ?*]", "", KEY_2, "2".unicode_at(0), ["2".unicode_at(0)]],
+		["What do you want to eat? [fg or ?*]", "", KEY_Z, "z".unicode_at(0), ["z".unicode_at(0)]],
+		["Really quit?", "yn", KEY_X, "x".unicode_at(0), []],
+		["Really quit?", "yn", KEY_Y, "y".unicode_at(0), ["y".unicode_at(0)]],
+	]
+	for c in cases:
+		fake.keys.clear()
+		session.request.emit({"type": NhConst.EV_REQ_YN, "s": c[0], "s2": c[1], "a": 0})
+		await process_frame
+		if not gr.dialogs.is_open():
+			_fail("y/n request %s did not open a dialog" % c[0])
+			continue
+		root.push_input(_key_event(c[2], c[3]))
+		await process_frame
+		if fake.keys != c[4]:
+			_fail("key %s in y/n %s [%s] sent %s, want %s" % [String.chr(c[3]), c[0], c[1], fake.keys, c[4]])
+		if gr.dialogs.is_open():
+			root.push_input(_key_event(KEY_ESCAPE, 0))
+			await process_frame
+	session.pending_request = {}
+	print("y/n keys: %d cases" % cases.size())
 
 
 func _check_clicks(gr: Node, session: Node, fake) -> void:

@@ -136,7 +136,9 @@ func _show_yn(ev: Dictionary) -> void:
 ## The answers a y/n question offers: the core's choice string, or, when the
 ## core sends none (e.g. character creation's "... for you? [ynaq]"), the
 ## letters in the prompt's trailing "[...]" (ranges like "a-c" expanded,
-## anything after " or " / ESC dropped).
+## " or " joined, so getobj's "[fg or ?*]" offers f, g, ? and *; anything
+## after ESC dropped). Prompt-derived letters only choose the buttons: see
+## yn_accepts for the keyboard.
 static func yn_choices(prompt: String, s2: String) -> String:
 	var src := s2
 	if src.is_empty():
@@ -146,10 +148,7 @@ static func yn_choices(prompt: String, s2: String) -> String:
 		var open := p.rfind("[")
 		if open < 0:
 			return ""
-		src = p.substr(open + 1, p.length() - open - 2)
-		var cut := src.find(" or ")
-		if cut >= 0:
-			src = src.substr(0, cut)
+		src = p.substr(open + 1, p.length() - open - 2).replace(" or ", "")
 		if src.contains(" ") or src.is_empty():
 			return ""
 	var out := ""
@@ -168,6 +167,13 @@ static func yn_choices(prompt: String, s2: String) -> String:
 			out += ch
 		i += 1
 	return out
+
+
+## Whether a typed key answers a y/n question. Only the core's own choice
+## string restricts the keyboard: without one (getobj's "[fg or ?*]" and the
+## like) the core also takes counts and letters the prompt does not list.
+static func yn_accepts(s2: String, ch: String) -> bool:
+	return s2.is_empty() or yn_choices("", s2).contains(ch)
 
 
 static func _choice_label(ch: String) -> String:
@@ -405,9 +411,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	elif _kind == "text" and (k.keycode == KEY_ENTER or k.keycode == KEY_SPACE):
 		_close_text()
 	elif _kind == "yn" and k.unicode > 0:
-		var choices := yn_choices(_request.get("s", ""), _request.get("s2", ""))
-		var ch := String.chr(k.unicode)
-		if choices.is_empty() or choices.contains(ch):
+		if yn_accepts(_request.get("s2", ""), String.chr(k.unicode)):
 			_answer_key(k.unicode)
 	elif _kind == "menu" and (k.keycode == KEY_ENTER or k.keycode == KEY_KP_ENTER):
 		_finish_menu(int(_request.get("b", 0)) == NhConst.PICK_NONE)
