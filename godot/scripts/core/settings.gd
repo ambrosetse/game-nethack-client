@@ -18,7 +18,8 @@ const CJK_FONT := "res://assets/fonts/NotoSansCJKsc-Regular.otf"
 var language := "en"
 var renderer := "2d"          # "2d" or "3d"
 var number_pad := false       # false = vi-keys, true = numpad digits
-var tileset := "original"     # "original" or "classic" (win/share tiles)
+## "illustrated" (default), "original" or "classic" (win/share tiles)
+var tileset := "illustrated"
 var player_name := ""
 var role := "random"
 var race := "random"
@@ -45,7 +46,7 @@ func load_settings() -> void:
 	if not LOCALES.has(language):
 		language = "en"
 	renderer = _cfg.get_value("ui", "renderer", "2d")
-	tileset = _cfg.get_value("ui", "tileset", "original")
+	tileset = _cfg.get_value("ui", "tileset", "illustrated")
 	number_pad = _cfg.get_value("input", "number_pad", false)
 	player_name = _cfg.get_value("player", "name", "")
 	role = _cfg.get_value("player", "role", "random")

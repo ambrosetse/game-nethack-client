@@ -6,11 +6,14 @@ extends Node2D
 ## right = inspect) through `clicked`.
 
 signal clicked(cell: Vector2i, button: int)
+## Emitted once, on the core's first map draw.
+signal first_drawn
 
 const NhConst = preload("res://scripts/core/nh_const.gd")
 
 var model
 var atlas
+var _drawn := false
 var _map: TileMapLayer
 var _fog: TileMapLayer
 var _camera: Camera2D
@@ -33,7 +36,7 @@ func setup(p_model, p_atlas) -> void:
 	model.cell_changed.connect(_on_cell)
 	model.map_cleared.connect(redraw)
 	model.vision_changed.connect(_redraw_fog)
-	model.hero_moved.connect(func(_x, _y): _center())
+	model.hero_moved.connect(func(_x, _y): _center(true))
 	redraw()
 
 
@@ -48,7 +51,20 @@ func activate(on: bool) -> void:
 	_camera.enabled = on
 	if on:
 		_camera.make_current()
-		_center()
+		_center(true)
+
+
+func is_active() -> bool:
+	return visible and _camera.enabled
+
+
+func camera() -> Camera2D:
+	return _camera
+
+
+## True once the core has drawn at least one map cell.
+func has_drawn() -> bool:
+	return _drawn
 
 
 func _make_tileset() -> TileSet:
@@ -94,6 +110,18 @@ func _on_cell(x: int, y: int) -> void:
 		_map.erase_cell(Vector2i(x, y))
 	else:
 		_map.set_cell(Vector2i(x, y), _source_id, coords)
+		if not _drawn:
+			_drawn = true
+			_on_first_draw()
+
+
+## The core's first map draw: show the map and centre on the hero right away
+## (the renderer chosen in Settings, no F2 needed).
+func _on_first_draw() -> void:
+	if _camera.enabled:
+		_camera.make_current()
+	_center(true)
+	first_drawn.emit()
 
 
 func _redraw_fog() -> void:
@@ -104,10 +132,16 @@ func _redraw_fog() -> void:
 				_fog.set_cell(Vector2i(x, y), 0, Vector2i.ZERO)
 
 
-func _center() -> void:
+## Centre the camera on the hero (or the cursor; the middle of the map until
+## the core has placed either).  `snap` skips the smoothing pan.
+func _center(snap := false) -> void:
 	var c: Vector2i = model.hero if model.hero.x >= 0 else model.cursor
+	var p := Vector2(model.width, model.height) * 0.5
 	if c.x >= 0:
-		_camera.position = (Vector2(c) + Vector2(0.5, 0.5)) * atlas.tile_size
+		p = Vector2(c) + Vector2(0.5, 0.5)
+	_camera.position = p * atlas.tile_size
+	if snap and _camera.is_inside_tree():
+		_camera.reset_smoothing()
 
 
 func zoom_by(f: float) -> void:

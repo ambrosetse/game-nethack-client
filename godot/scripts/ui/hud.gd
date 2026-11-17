@@ -26,8 +26,11 @@ var _inventory: ItemList
 func setup(p_model, p_atlas) -> void:
 	model = p_model
 	atlas = p_atlas
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# Offsets too: anchors alone leave the HUD a zero-size box in the top-left
+	# corner, piling every panel on top of the map there.
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	focus_mode = Control.FOCUS_NONE
 	_build_log()
 	_build_status()
 	_build_inventory()
@@ -69,11 +72,14 @@ func _build_log() -> void:
 	more.text = "HUD_HISTORY"
 	more.tooltip_text = "HUD_HISTORY_HINT"
 	more.flat = true
+	# HUD controls never take keyboard focus: keys must reach the game.
+	more.focus_mode = Control.FOCUS_NONE
 	more.pressed.connect(toggle_history)
 	head.add_child(more)
 	_log = RichTextLabel.new()
 	_log.scroll_following = true
 	_log.selection_enabled = true
+	_log.focus_mode = Control.FOCUS_NONE
 	_log.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_log.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	box.add_child(_log)

@@ -6,8 +6,8 @@ extends Node
 ## * Arrow keys, Home/End/PgUp/PgDn and the keypad become movement in the
 ##   scheme the core currently uses: digits when number_pad is on, vi-keys
 ##   otherwise.  Shift runs (uppercase vi-key or Shift+digit -> rush prefix).
-## * Mouse clicks become nh_poskey clicks (left = travel, right = inspect),
-##   but only while the core asked for a position-capable key.
+## * Mouse clicks while the core waits for a key: left on a neighbouring cell
+##   steps there, left farther away travels, right inspects (see click_action).
 
 const NhConst = preload("res://scripts/core/nh_const.gd")
 
@@ -26,10 +26,14 @@ const KEY_DIRS := {
 var model
 ## Callable returning true while a modal UI (dialog, in-game menu) is open.
 var blocked: Callable = func(): return false
+## {cell, mod} of a click waiting for the position prompt it opened
+var _pending_click := {}
 
 
 func setup(p_model) -> void:
 	model = p_model
+	if not Session.request.is_connected(_on_request):
+		Session.request.connect(_on_request)
 
 
 ## Pure mapping used by the input handler and the tests.
@@ -82,13 +86,77 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	Session.send_key(code)
 
 
-## Called by the map views with a map cell and the mouse button.
+## Pure mapping of a map click, used by on_map_clicked and the tests.
+##   left on a neighbouring cell  -> {"key": direction key}  (one step)
+##   left on a farther cell       -> travel there
+##   right on any cell            -> inspect it (farlook)
+## When the core reads a position-capable key (poskey) the travel/inspect is
+## a direct click; otherwise the command key (_ travel, ; farlook) is sent
+## first and the click answers the position prompt it opens.
+## Returns {} when the click does nothing (left click on the hero).
+static func click_action(hero: Vector2i, cell: Vector2i, button: int, poskey: bool,
+		number_pad: bool) -> Dictionary:
+	if button == MOUSE_BUTTON_RIGHT:
+		if poskey:
+			return {"click": NhConst.CLICK_INSPECT}
+		return {"key": ";".unicode_at(0), "click": NhConst.CLICK_INSPECT}
+	if button != MOUSE_BUTTON_LEFT:
+		return {}
+	if hero.x >= 0:
+		var d := cell - hero
+		if d == Vector2i.ZERO:
+			return {}
+		if absi(d.x) <= 1 and absi(d.y) <= 1:
+			return {"key": direction_key(d, number_pad)}
+	if poskey:
+		return {"click": NhConst.CLICK_TRAVEL}
+	return {"key": "_".unicode_at(0), "click": NhConst.CLICK_TRAVEL}
+
+
+## The movement key for a one-cell step (dx, dy in -1..1).
+static func direction_key(d: Vector2i, number_pad: bool) -> int:
+	var name := ""
+	match d:
+		Vector2i(-1, 0): name = "w"
+		Vector2i(1, 0): name = "e"
+		Vector2i(0, -1): name = "n"
+		Vector2i(0, 1): name = "s"
+		Vector2i(-1, -1): name = "nw"
+		Vector2i(1, -1): name = "ne"
+		Vector2i(-1, 1): name = "sw"
+		Vector2i(1, 1): name = "se"
+	if name == "":
+		return -1
+	return DIRS[name][1 if number_pad else 0].unicode_at(0)
+
+
+## Called by the map views with a map cell and the mouse button.  Works
+## whenever the core waits for a key, not only for position-capable keys.
 func on_map_clicked(cell: Vector2i, button: int) -> void:
 	if blocked.call() or not Session.waiting_for_command():
 		return
-	if int(Session.pending_request.get("a", 0)) != 1:
-		return
 	if not model.in_bounds(cell.x, cell.y):
 		return
-	var mod := NhConst.CLICK_TRAVEL if button == MOUSE_BUTTON_LEFT else NhConst.CLICK_INSPECT
-	Session.send_click(cell.x, cell.y, mod)
+	var poskey := int(Session.pending_request.get("a", 0)) == 1
+	var act := click_action(model.hero, cell, button, poskey, model.number_pad)
+	if act.is_empty():
+		return
+	if act.has("key"):
+		if act.has("click"):
+			# answered by the position prompt the command key opens
+			_pending_click = {"cell": cell, "mod": act.click}
+		Session.send_key(act.key)
+	else:
+		Session.send_click(cell.x, cell.y, act.click)
+
+
+## The core's next request after a travel/farlook key: answer its position
+## prompt with the clicked cell, or drop the click if it asked for something
+## else.
+func _on_request(ev: Dictionary) -> void:
+	if _pending_click.is_empty():
+		return
+	var pc := _pending_click
+	_pending_click = {}
+	if int(ev.get("type", 0)) == NhConst.EV_REQ_KEY and int(ev.get("a", 0)) == 1:
+		Session.send_click(pc.cell.x, pc.cell.y, pc.mod)

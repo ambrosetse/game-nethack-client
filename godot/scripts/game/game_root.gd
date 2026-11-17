@@ -29,7 +29,8 @@ var _overlay: CanvasLayer
 var _pause: PanelContainer
 var _options: PanelContainer
 var _ended: PanelContainer
-var _error: AcceptDialog
+var _error: PanelContainer
+var _error_text: Label
 
 
 func _ready() -> void:
@@ -57,10 +58,7 @@ func _ready() -> void:
 	dialogs.setup(atlas)
 	_build_pause()
 	_build_ended()
-	_error = AcceptDialog.new()
-	_error.confirmed.connect(_to_menu)
-	_error.canceled.connect(_to_menu)
-	_overlay.add_child(_error)
+	_build_error()
 
 	mapper = InputMapper.new()
 	add_child(mapper)
@@ -68,6 +66,7 @@ func _ready() -> void:
 	mapper.blocked = func(): return _modal_open()
 	view_2d.clicked.connect(mapper.on_map_clicked)
 	view_3d.clicked.connect(mapper.on_map_clicked)
+	view_2d.first_drawn.connect(_apply_renderer)
 
 	Settings.changed.connect(_on_setting)
 	Session.show_history.connect(hud.show_history)
@@ -83,9 +82,30 @@ func _ready() -> void:
 
 
 func _fail(key: String) -> void:
-	_error.title = tr("ERROR_TITLE")
-	_error.dialog_text = tr(key)
-	_error.popup_centered.call_deferred()
+	_error_text.text = key
+	_error.visible = true
+
+
+## The error box: a centred panel like the other overlays (an AcceptDialog
+## is a separate window and is not kept centred on resize).
+func _build_error() -> void:
+	var p := _panel(_overlay)
+	_error = p[0]
+	var box: VBoxContainer = p[1]
+	var t := Label.new()
+	t.text = "ERROR_TITLE"
+	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(t)
+	_error_text = Label.new()
+	_error_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_error_text.custom_minimum_size = Vector2(360, 0)
+	box.add_child(_error_text)
+	_add_button(box, "UI_OK", _to_menu)
+
+
+## The panels of the centred overlays (pause, options, game over, error).
+func overlay_panels() -> Array:
+	return [_pause, _options, _ended, _error]
 
 
 func _to_menu() -> void:
@@ -93,7 +113,8 @@ func _to_menu() -> void:
 
 
 func _modal_open() -> bool:
-	return dialogs.is_open() or _pause.visible or _options.visible or _ended.visible
+	return dialogs.is_open() or _pause.visible or _options.visible or _ended.visible \
+		or _error.visible
 
 
 # --- renderers ------------------------------------------------------------
@@ -120,9 +141,10 @@ func _on_setting(key: String) -> void:
 
 func _panel(parent: Node) -> Array:
 	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(center)
+	# Offsets too: anchors alone leave a zero-size box in the top-left corner.
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(320, 0)
 	panel.visible = false
@@ -154,9 +176,9 @@ func _build_pause() -> void:
 	_add_button(box, "GAME_HELP", _pause_help)
 	_add_button(box, "GAME_SAVE_QUIT", _save_quit)
 	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_overlay.add_child(center)
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_options = OptionsPanel.new()
 	_options.visible = false
 	_options.closed.connect(_close_options)
