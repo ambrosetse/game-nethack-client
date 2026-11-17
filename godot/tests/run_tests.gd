@@ -8,10 +8,16 @@ extends SceneTree
 ##    other locale, and the project lists every locale file;
 ## 2. CJK font: the bundled font draws every CJK/Hangul/Kana character used
 ##    by the translations;
-## 3. glyph -> tile coverage: when the GDExtension is loaded, both tile atlases
+## 3. glyph -> tile coverage: when the GDExtension is loaded, every tile atlas
 ##    map every glyph of the core's glyph table to a cell inside the atlas;
 ## 4. player-name cleaning (see _check_player_name);
-## 5. save-file matching for Continue (see _check_save_names).
+## 5. save-file matching for Continue (see _check_save_names);
+## 6. core-text table: translated rows and the English fallback;
+## 7. the game scene, with a stand-in for the native game (fake_game.gd):
+##    dialogs stay centred (within 4px) before and after a window resize,
+##    the map is visible with its camera current after the first map draw
+##    (no F2), keys reach Session.send_key with the HUD present, and map
+##    clicks step or travel.
 ##
 ## Exit status 0 = pass.
 
@@ -19,18 +25,230 @@ const LOCALES := ["en", "zh_TW", "zh_CN", "ko", "ja"]
 const CJK_FONT := "res://assets/fonts/NotoSansCJKsc-Regular.otf"
 const TileAtlas = preload("res://scripts/game/tile_atlas.gd")
 const NhConst = preload("res://scripts/core/nh_const.gd")
+const CoreText = preload("res://scripts/core/core_text.gd")
+const FakeGame = preload("res://tests/fake_game.gd")
+const GAME_ROOT := "res://scripts/game/game_root.gd"
 
 var failures := 0
 
 
-func _init() -> void:
+## Runs after the autoloads (Session, Settings) are in the tree; the scene
+## checks need frames, so the run is a coroutine.
+func _initialize() -> void:
+	_run()
+
+
+func _run() -> void:
 	var translations := _check_translations()
 	_check_font(translations)
 	_check_glyph_coverage()
 	_check_player_name()
 	_check_save_names()
+	_check_core_text()
+	await _check_game_scene()
 	print("PASSED" if failures == 0 else "FAILED (%d)" % failures)
 	quit(1 if failures else 0)
+
+
+## 6. core text: table rows translate, everything else stays English.
+func _check_core_text() -> void:
+	var cases := [
+		# [text, lang, expected]
+		["Who are you?", "zh_TW", "你是誰？"],
+		["Who are you?", "ja", "あなたは誰ですか？"],
+		["female", "ko", "여성"],
+		["Who are you?", "en", "Who are you?"],
+		["Who are you?", "fr", "Who are you?"],
+		["You hear the footsteps of a guard on patrol.", "zh_TW",
+				"You hear the footsteps of a guard on patrol."],
+		["", "ja", ""],
+	]
+	for c in cases:
+		var got := CoreText.translate(c[0], c[1])
+		if got != c[2]:
+			_fail("CoreText.translate(%s, %s) = %s, want %s" % [c[0], c[1], got, c[2]])
+	print("core text: %d cases" % cases.size())
+
+
+## 7. the game scene with a fake native game.
+func _check_game_scene() -> void:
+	var session: Node = root.get_node_or_null("Session")
+	var settings: Node = root.get_node_or_null("Settings")
+	if session == null or settings == null:
+		_fail("Session/Settings autoloads missing")
+		return
+	var fake := FakeGame.new()
+	var saved_game: Node = session.game
+	session.game = fake
+	settings.renderer = "2d"
+	settings.number_pad = false
+	var model = session.model
+	model.number_pad = false
+	model.reset()
+	var gr: Node = (load(GAME_ROOT) as GDScript).new()
+	root.add_child(gr)
+	await process_frame
+	# without the extension the scene reports it; the checks need it closed
+	gr._error.visible = false
+	await _check_dialog_centring(gr, session)
+	await _check_first_draw(gr, model)
+	await _check_keys(gr, session, fake)
+	await _check_clicks(gr, session, fake)
+	gr.queue_free()
+	await process_frame
+	session.game = saved_game
+	session.pending_request = {}
+	fake.free()
+
+
+func _centre_error(c: Control) -> float:
+	var r := c.get_global_rect()
+	var vp := c.get_viewport_rect()
+	return (r.get_center() - vp.get_center()).length()
+
+
+func _check_dialog_centring(gr: Node, session: Node) -> void:
+	session.request.emit({"type": NhConst.EV_REQ_YN, "s": "Really quit?", "s2": "ynq", "a": 0})
+	await process_frame
+	await process_frame
+	var dlg = gr.dialogs
+	if not dlg.is_open():
+		_fail("y/n request did not open a dialog")
+		return
+	var buttons: Array = dlg.panel().find_children("*", "Button", true, false)
+	if buttons.size() != 3:
+		_fail("y/n dialog for [ynq] has %d buttons, want 3" % buttons.size())
+	var panels: Array = [dlg.panel()]
+	for p in gr.overlay_panels():
+		if p != null:
+			panels.append(p)
+	for p in panels:
+		p.visible = true
+	await process_frame
+	await process_frame
+	for p in panels:
+		var e := _centre_error(p)
+		if e > 4.0:
+			_fail("%s is %.1fpx off centre" % [p.name, e])
+	var old := root.size
+	root.size = Vector2i(1600, 700)
+	await process_frame
+	await process_frame
+	await process_frame
+	if root.size != Vector2i(1600, 700):
+		print("dialog centring: window cannot be resized here; resize check skipped")
+	else:
+		for p in panels:
+			var e := _centre_error(p)
+			if e > 4.0:
+				_fail("%s is %.1fpx off centre after a resize" % [p.name, e])
+	root.size = old
+	for p in panels:
+		if p != dlg.panel():
+			p.visible = false
+	# answer the dialog so it closes (no Session request is pending)
+	dlg._panel.visible = false
+	await process_frame
+	print("dialog centring: %d panels" % panels.size())
+
+
+func _check_first_draw(gr: Node, model) -> void:
+	var view: Node2D = gr.view_2d
+	model.set_vision(model.width, model.height, 10, 5, "")
+	# the first glyph the atlas can draw
+	var g := 0
+	while gr.atlas.cell_of(g) < 0 and g < gr.atlas.cells.size():
+		g += 1
+	model.set_glyph(10, 5, g, 7, g)
+	model.set_glyph(11, 5, g, 7, g)
+	await process_frame
+	if not view.has_drawn():
+		_fail("map view did not draw the first glyph")
+	if not view.is_visible_in_tree():
+		_fail("map not visible after the first draw")
+	if not view.camera().is_current():
+		_fail("map camera is not current after the first draw")
+	var want: Vector2 = (Vector2(10, 5) + Vector2(0.5, 0.5)) * gr.atlas.tile_size
+	if view.camera().position.distance_to(want) > 1.0:
+		_fail("camera not centred on the hero: %s, want %s" % [view.camera().position, want])
+	print("first draw: map visible, camera current")
+
+
+func _key_event(keycode: int, unicode: int) -> InputEventKey:
+	var k := InputEventKey.new()
+	k.keycode = keycode
+	k.unicode = unicode
+	k.pressed = true
+	return k
+
+
+func _check_keys(gr: Node, session: Node, fake) -> void:
+	if gr.hud == null or not gr.hud.is_inside_tree():
+		_fail("HUD missing from the game scene")
+	var cases := [
+		# [keycode, unicode, expected key]
+		[KEY_H, "h".unicode_at(0), "h".unicode_at(0)],
+		[KEY_LEFT, 0, "h".unicode_at(0)],
+		[KEY_KP_8, 0, "k".unicode_at(0)],
+		[KEY_S, "s".unicode_at(0), "s".unicode_at(0)],
+		[KEY_PERIOD, ".".unicode_at(0), ".".unicode_at(0)],
+	]
+	for c in cases:
+		fake.keys.clear()
+		session.pending_request = {"type": NhConst.EV_REQ_KEY, "a": 1}
+		root.push_input(_key_event(c[0], c[1]))
+		await process_frame
+		if fake.keys != [c[2]]:
+			_fail("key %s reached send_key as %s, want [%d]"
+					% [OS.get_keycode_string(c[0]), fake.keys, c[2]])
+	var focused := root.gui_get_focus_owner()
+	if focused != null:
+		_fail("%s keeps keyboard focus" % focused.name)
+	session.pending_request = {}
+	print("keys: %d cases reach Session.send_key" % cases.size())
+
+
+func _check_clicks(gr: Node, session: Node, fake) -> void:
+	var view: Node2D = gr.view_2d
+	var tile: float = gr.atlas.tile_size
+	var cases := [
+		# [cell, button, expected keys, expected clicks]
+		[Vector2i(11, 5), MOUSE_BUTTON_LEFT, ["l".unicode_at(0)], []],
+		[Vector2i(9, 6), MOUSE_BUTTON_LEFT, ["b".unicode_at(0)], []],
+		[Vector2i(20, 8), MOUSE_BUTTON_LEFT, [], [[20, 8, NhConst.CLICK_TRAVEL]]],
+		[Vector2i(20, 8), MOUSE_BUTTON_RIGHT, [], [[20, 8, NhConst.CLICK_INSPECT]]],
+	]
+	# The headless display server drops pushed mouse events before they reach
+	# _unhandled_input, so the event goes to the map view's handler directly;
+	# the screen -> cell conversion and the mapper are still exercised.
+	await process_frame
+	for c in cases:
+		fake.keys.clear()
+		fake.clicks.clear()
+		session.pending_request = {"type": NhConst.EV_REQ_KEY, "a": 1}
+		var local := (Vector2(c[0]) + Vector2(0.5, 0.5)) * tile
+		var screen: Vector2 = view.get_global_transform_with_canvas() * local
+		var m := InputEventMouseButton.new()
+		m.button_index = c[1]
+		m.pressed = true
+		m.position = screen
+		m.global_position = screen
+		view._unhandled_input(m)
+		await process_frame
+		if fake.keys != c[2] or fake.clicks != c[3]:
+			_fail("click %s on %s sent keys %s clicks %s, want %s %s"
+					% [c[1], c[0], fake.keys, fake.clicks, c[2], c[3]])
+	# without a position-capable key request the travel key goes first and the
+	# click answers the position prompt it opens
+	fake.keys.clear()
+	fake.clicks.clear()
+	session.pending_request = {"type": NhConst.EV_REQ_KEY, "a": 0}
+	gr.mapper.on_map_clicked(Vector2i(20, 8), MOUSE_BUTTON_LEFT)
+	session.request.emit({"type": NhConst.EV_REQ_KEY, "a": 1})
+	if fake.keys != ["_".unicode_at(0)] or fake.clicks != [[20, 8, NhConst.CLICK_TRAVEL]]:
+		_fail("travel via '_' sent keys %s clicks %s" % [fake.keys, fake.clicks])
+	session.pending_request = {}
+	print("clicks: %d cases" % (cases.size() + 1))
 
 
 ## 4. player names: ',' and ':' never reach NETHACKOPTIONS (same cases as
@@ -188,11 +406,11 @@ func _check_glyph_coverage() -> void:
 	if count <= 0:
 		_fail("empty glyph table")
 		return
-	for set_name in ["original", "classic"]:
+	for set_name in TileAtlas.ORDER:
 		var atlas = TileAtlas.new()
 		if not atlas._load_set(set_name):
-			_fail("tileset '%s' missing: run tools/make_tileset.py and "
-					% set_name + "tools/convert_share_tiles.py")
+			_fail("tileset '%s' missing: run tools/make_tileset.py, " % set_name
+					+ "tools/make_illustrated_tileset.py and tools/convert_share_tiles.py")
 			continue
 		if atlas.cells.size() < count:
 			_fail("%s: %d cells for %d glyphs" % [set_name, atlas.cells.size(), count])

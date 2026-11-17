@@ -129,6 +129,9 @@ msgstr "オリジナル"
 msgid "OPTIONS_TILESET_CLASSIC"
 msgstr "クラシック（NetHack タイル）"
 
+msgid "OPTIONS_TILESET_ILLUSTRATED"
+msgstr "イラスト"
+
 msgid "OPTIONS_HINT"
 msgstr "ゲーム中は F2 で 2D/3D を切り替えます。移動キーは次のゲームから有効です。"
 

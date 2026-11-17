@@ -4,7 +4,8 @@
     check_glyph_coverage.py GLYPHS.tsv TILES_DIR
 
 For each tileset found in TILES_DIR (tiles.png + glyph_map.json, and
-tiles_classic.png + glyph_map_classic.json when present) check that
+tiles_classic.png + glyph_map_classic.json and tiles_illustrated.png +
+glyph_map_illustrated.json when present) check that
 
   * the map lists exactly as many glyphs as the core reports,
   * every glyph's cell lies inside the atlas,
@@ -63,8 +64,10 @@ def main(argv):
         return 2
     rows = mt.read_glyphs(argv[1])
     sets = [("tiles.png", "glyph_map.json")]
-    if os.path.exists(os.path.join(argv[2], "glyph_map_classic.json")):
-        sets.append(("tiles_classic.png", "glyph_map_classic.json"))
+    for png, gmap in (("tiles_classic.png", "glyph_map_classic.json"),
+                      ("tiles_illustrated.png", "glyph_map_illustrated.json")):
+        if os.path.exists(os.path.join(argv[2], gmap)):
+            sets.append((png, gmap))
     failed = False
     for png, gmap in sets:
         errs = check(rows, os.path.join(argv[2], png), os.path.join(argv[2], gmap))

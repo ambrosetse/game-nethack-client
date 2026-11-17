@@ -63,10 +63,39 @@ def check(godot_dir):
     return keys, problems
 
 
+def check_core_text(godot_dir):
+    """The core-text table parses (every row has all four translations with
+    matching placeholders) and its generated outputs are current."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    sys.path.insert(0, here)
+    import build_core_text
+
+    table = os.path.join(here, "core_text_table.txt")
+    try:
+        rows, js, inc = build_core_text.outputs(table)
+    except ValueError as e:
+        return 0, ["core_text_table.txt: %s" % e]
+    problems = []
+    for path, want in ((os.path.join(godot_dir, "locale", "core_text.json"), js),
+                       (os.path.join(here, "..", "native", "bridge", "core_text_table.inc"), inc)):
+        try:
+            with open(path, encoding="utf-8") as f:
+                have = f.read()
+        except OSError:
+            have = None
+        if have != want:
+            problems.append("%s is out of date: run python3 tools/build_core_text.py"
+                            % os.path.relpath(path, os.path.join(here, "..")))
+    return len(rows), problems
+
+
 def main(argv):
     here = os.path.dirname(os.path.abspath(__file__))
     godot_dir = argv[1] if len(argv) > 1 else os.path.join(here, "..", "godot")
     keys, problems = check(godot_dir)
+    core_rows, core_problems = check_core_text(godot_dir)
+    problems += core_problems
+    print("%d core-text rows" % core_rows)
     for p in problems:
         print("MISSING " + p)
     print("%d keys used, %d languages, %d problems" % (len(keys), len(LANGS), len(problems)))

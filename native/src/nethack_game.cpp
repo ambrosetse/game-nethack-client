@@ -88,6 +88,8 @@ void NetHackGame::_bind_methods() {
                          &NetHackGame::get_symbol_names);
     ClassDB::bind_method(D_METHOD("core_text", "text"),
                          &NetHackGame::core_text);
+    ClassDB::bind_method(D_METHOD("set_core_language", "lang"),
+                         &NetHackGame::set_core_language);
     ClassDB::bind_method(D_METHOD("set_auto_poll", "enabled"),
                          &NetHackGame::set_auto_poll);
     ClassDB::bind_method(D_METHOD("get_auto_poll"),
@@ -312,6 +314,10 @@ PackedStringArray NetHackGame::get_symbol_names() const {
 
 String NetHackGame::core_text(const String &s) const {
     return utf8(nhb_core_text(s.utf8().get_data()));
+}
+
+void NetHackGame::set_core_language(const String &lang) {
+    nhb_set_core_lang(lang.utf8().get_data());
 }
 
 } // namespace godot

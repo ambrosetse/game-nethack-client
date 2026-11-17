@@ -14,6 +14,7 @@
 
 extern const struct symparse loadsyms[];
 extern glyph_map glyphmap[MAX_GLYPH];
+extern struct window_procs shim_procs;
 
 /* Keep in sync with NetHackGame.GLYPH_CAT_* and nh_const.gd */
 enum nhgodot_glyph_category {
@@ -76,10 +77,22 @@ nhg_prepare(void)
      * settings.  Colours are always wanted by the frontend. */
     if (!program_state.in_moveloop) {
         boolean save_color = iflags.use_color;
+        struct window_procs save_procs = windowprocs;
 
+        /* mons[] and objects[] are filled in at game startup; before that
+         * every monster and object reads as "(null)" with no symbol. */
+        if (!mons[LOW_PM].pmnames[NEUTRAL])
+            monst_globals_init();
+        if (!OBJ_NAME(objects[ARROW]))
+            objects_globals_init();
+        /* has_color() asks the window port, which is chosen at game start;
+         * without one every glyph would come out NO_COLOR. */
+        if (!windowprocs.name)
+            windowprocs = shim_procs;
         iflags.use_color = TRUE;
         reset_glyphmap(gm_newgame);
         iflags.use_color = save_color;
+        windowprocs = save_procs;
     }
     glyphmap_ready = TRUE;
 }

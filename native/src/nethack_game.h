@@ -59,6 +59,7 @@ public:
     Dictionary get_glyph_table() const;
     PackedStringArray get_symbol_names() const;
     String core_text(const String &s) const;
+    void set_core_language(const String &lang);
 
     void set_auto_poll(bool v) { auto_poll = v; }
     bool get_auto_poll() const { return auto_poll; }

@@ -129,6 +129,9 @@ msgstr "Original"
 msgid "OPTIONS_TILESET_CLASSIC"
 msgstr "Classic (NetHack tiles)"
 
+msgid "OPTIONS_TILESET_ILLUSTRATED"
+msgstr "Illustrated"
+
 msgid "OPTIONS_HINT"
 msgstr "F2 switches 2D/3D in game. Movement keys apply to the next game."
 

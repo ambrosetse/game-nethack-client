@@ -129,6 +129,9 @@ msgstr "原創"
 msgid "OPTIONS_TILESET_CLASSIC"
 msgstr "經典（NetHack 圖塊）"
 
+msgid "OPTIONS_TILESET_ILLUSTRATED"
+msgstr "插畫"
+
 msgid "OPTIONS_HINT"
 msgstr "遊戲中按 F2 切換 2D/3D。移動按鍵於下一局生效。"
 

@@ -129,6 +129,9 @@ msgstr "오리지널"
 msgid "OPTIONS_TILESET_CLASSIC"
 msgstr "클래식 (NetHack 타일)"
 
+msgid "OPTIONS_TILESET_ILLUSTRATED"
+msgstr "일러스트"
+
 msgid "OPTIONS_HINT"
 msgstr "게임 중 F2로 2D/3D를 전환합니다. 이동 키는 다음 게임부터 적용됩니다."
 

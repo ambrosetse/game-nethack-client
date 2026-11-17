@@ -158,7 +158,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			MOUSE_BUTTON_WHEEL_DOWN:
 				zoom_by(1.0 / 1.1)
 			MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT:
-				var cell := _map.local_to_map(_map.get_local_mouse_position())
+				var cell := _map.local_to_map(_map.make_canvas_position_local(event.position))
 				if model.in_bounds(cell.x, cell.y):
 					clicked.emit(cell, event.button_index)
 					get_viewport().set_input_as_handled()
