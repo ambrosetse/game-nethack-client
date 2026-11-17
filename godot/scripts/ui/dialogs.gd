@@ -23,12 +23,14 @@ var _ext_ids: Array = []
 
 func setup(p_atlas) -> void:
 	atlas = p_atlas
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# Anchors *and* offsets: anchors alone leave a zero-size rect at the
+	# top-left, which put every dialog in the corner instead of the centre.
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(center)
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_panel = PanelContainer.new()
 	_panel.custom_minimum_size = Vector2(520, 0)
 	center.add_child(_panel)
@@ -42,6 +44,11 @@ func setup(p_atlas) -> void:
 
 func is_open() -> bool:
 	return _panel.visible
+
+
+## The visible dialog box (for the layout tests).
+func panel() -> PanelContainer:
+	return _panel
 
 
 func _clear() -> void:
@@ -84,6 +91,7 @@ func _buttons(specs: Array) -> void:
 	for s in specs:
 		var b := Button.new()
 		b.text = s[0]
+		b.custom_minimum_size = Vector2(72, 0)
 		b.pressed.connect(s[1])
 		row.add_child(b)
 
@@ -108,19 +116,64 @@ func _on_request(ev: Dictionary) -> void:
 func _show_yn(ev: Dictionary) -> void:
 	_clear()
 	_open("yn")
-	_label(Session.core_text(ev.get("s", "")))
-	var choices: String = ev.get("s2", "")
+	var prompt: String = ev.get("s", "")
+	_label(Session.core_text(prompt))
+	var choices := yn_choices(prompt, ev.get("s2", ""))
 	var specs := []
 	if choices.is_empty():
 		_label("DIALOG_ANY_KEY", true)
 		specs.append(["UI_OK", func(): _answer_key(int(ev.get("a", 27)) if int(ev.get("a", 0)) else 32)])
+		specs.append(["UI_CANCEL", _answer_key.bind(27)])
 	else:
+		# one button per offered answer, each sending that key to the core
 		for ch in choices:
-			if ch == "\u001b":
-				break
 			specs.append([_choice_label(ch), _answer_key.bind(ch.unicode_at(0))])
-	specs.append(["UI_CANCEL", _answer_key.bind(27)])
+		if not choices.contains("q") and not choices.contains("n"):
+			specs.append(["UI_CANCEL", _answer_key.bind(27)])
 	_buttons(specs)
+
+
+## The answers a y/n question offers: the core's choice string, or, when the
+## core sends none (e.g. character creation's "... for you? [ynaq]"), the
+## letters in the prompt's trailing "[...]" (ranges like "a-c" expanded,
+## " or " joined, so getobj's "[fg or ?*]" offers f, g, ? and *; anything
+## after ESC dropped). Prompt-derived letters only choose the buttons: see
+## yn_accepts for the keyboard.
+static func yn_choices(prompt: String, s2: String) -> String:
+	var src := s2
+	if src.is_empty():
+		var p := prompt.strip_edges()
+		if not p.ends_with("]"):
+			return ""
+		var open := p.rfind("[")
+		if open < 0:
+			return ""
+		src = p.substr(open + 1, p.length() - open - 2).replace(" or ", "")
+		if src.contains(" ") or src.is_empty():
+			return ""
+	var out := ""
+	var i := 0
+	while i < src.length():
+		var ch := src[i]
+		if ch == "\u001b":
+			break
+		if i + 2 < src.length() and src[i + 1] == "-":
+			for c in range(ch.unicode_at(0), src.unicode_at(i + 2) + 1):
+				if not out.contains(String.chr(c)):
+					out += String.chr(c)
+			i += 3
+			continue
+		if not out.contains(ch):
+			out += ch
+		i += 1
+	return out
+
+
+## Whether a typed key answers a y/n question. Only the core's own choice
+## string restricts the keyboard: without one (getobj's "[fg or ?*]" and the
+## like) the core also takes counts and letters the prompt does not list.
+static func yn_accepts(s2: String, ch: String) -> bool:
+	return s2.is_empty() or yn_choices("", s2).contains(ch)
 
 
 static func _choice_label(ch: String) -> String:
@@ -358,9 +411,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	elif _kind == "text" and (k.keycode == KEY_ENTER or k.keycode == KEY_SPACE):
 		_close_text()
 	elif _kind == "yn" and k.unicode > 0:
-		var choices: String = _request.get("s2", "")
-		var ch := String.chr(k.unicode)
-		if choices.is_empty() or choices.contains(ch):
+		if yn_accepts(_request.get("s2", ""), String.chr(k.unicode)):
 			_answer_key(k.unicode)
 	elif _kind == "menu" and (k.keycode == KEY_ENTER or k.keycode == KEY_KP_ENTER):
 		_finish_menu(int(_request.get("b", 0)) == NhConst.PICK_NONE)

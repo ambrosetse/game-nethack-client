@@ -60,10 +60,14 @@ jobs:
       - name: Native test - restore the save
         run: build/${{ matrix.platform }}/nethack_native_test --play build/nhtest --seed 42 --expect-restore
 
+      - name: Native test - core-text translation
+        run: build/${{ matrix.platform }}/nethack_native_test --core-text
+
       - name: Regenerate tilesets into a scratch directory
         run: |
           build/${{ matrix.platform }}/nethack_native_test --dump-glyphs build/GLYPHS.tsv
           python tools/make_tileset.py build/GLYPHS.tsv build/tiles-regen
+          python tools/make_illustrated_tileset.py build/GLYPHS.tsv build/tiles-regen
           python tools/convert_share_tiles.py build/GLYPHS.tsv thirdparty/NetHack/win/share build/tiles-regen
 
       - name: Committed tilesets match the regeneration

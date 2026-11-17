@@ -68,8 +68,14 @@ into a scratch directory and fails if the committed files differ
 ```sh
 build/<platform>/nethack_native_test --dump-glyphs build/GLYPHS.tsv
 python3 tools/make_tileset.py build/GLYPHS.tsv godot/assets/tiles
+python3 tools/make_illustrated_tileset.py build/GLYPHS.tsv godot/assets/tiles
 python3 tools/convert_share_tiles.py build/GLYPHS.tsv thirdparty/NetHack/win/share godot/assets/tiles
 ```
+
+There are three tilesets, chosen under Options → Tileset:
+- **illustrated**, the default: 32px painted tiles from `make_illustrated_tileset.py`;
+- **original**: flat 32px tiles from `make_tileset.py`;
+- **classic**: NetHack's own `win/share` tiles.
 
 The CJK font is fetched (pinned and checksum-verified), not committed:
 
@@ -142,11 +148,13 @@ godot/scripts/ui/   HUD (message log, status, conditions, inventory),
 | Input | Action |
 |---|---|
 | `h j k l y u b n` (shift to run) | vi-keys movement |
-| Numpad 1–9 | Movement (numpad layout) |
-| Arrow keys | Orthogonal movement |
-| Left-click on the map | Travel to a position (`nh_poskey`) |
-| Right-click on the map | Inspect a position (`nh_poskey`) |
+| Numpad 1–9 | Movement (numpad layout); numpad 5 / `.` rests |
+| Arrow keys, Home/End/PgUp/PgDn | Movement (orthogonal, then diagonal) |
+| Left-click a cell next to the hero | Step there |
+| Left-click a farther cell | Travel there (`_` travel) |
+| Right-click on the map | Inspect that cell (`;` farlook) |
 | Mouse wheel | Zoom |
+| Dialog buttons | A yes/no prompt shows one button per offered answer |
 | F1 | Help |
 | F2 | Toggle the 2D/3D renderer (also under Options) |
 | F3 | Switch the 3D camera mode |
@@ -155,6 +163,9 @@ godot/scripts/ui/   HUD (message log, status, conditions, inventory),
 | Esc / F10 | Pause menu (save, options, quit) |
 
 All other keys go to NetHack unchanged, so its normal command set works.
+Movement keys and map clicks work whenever NetHack waits for a command. The
+HUD never takes keyboard focus, so keys always reach the game. The map is
+centred on the hero as soon as it is first drawn.
 
 ## Languages
 
@@ -190,6 +201,6 @@ a compatible licence and record it in `assets/LICENSES.md`.
 The combined program links the NetHack core, so it is distributed under the
 NetHack General Public License (`thirdparty/NetHack/dat/license`). godot-cpp
 and Godot are MIT. Every asset, with its source and licence, is listed in
-[`assets/LICENSES.md`](assets/LICENSES.md). The original tileset and 3D
+[`assets/LICENSES.md`](assets/LICENSES.md). The illustrated and original tilesets and the 3D
 materials are CC0. The classic tileset is converted from NetHack's
 `win/share` tiles (NGPL). The CJK font is under the SIL OFL 1.1.

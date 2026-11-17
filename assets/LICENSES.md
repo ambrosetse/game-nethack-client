@@ -9,6 +9,7 @@ together with NGPL code.
 | Asset | Where it lives | Source | Licence |
 |---|---|---|---|
 | Original 2D tileset (`tiles.png`, `glyph_map.json`) | committed in `godot/assets/tiles/` | Drawn procedurally by `tools/make_tileset.py` from the glyph table dumped by `nethack_native_test --dump-glyphs`.  No third-party artwork is used. | CC0 1.0 (public domain dedication) |
+| Illustrated 2D tileset, the default (`tiles_illustrated.png`, `glyph_map_illustrated.json`) | committed in `godot/assets/tiles/` | Painted procedurally by `tools/make_illustrated_tileset.py` (shapes, gradients and text drawn in code) from the same glyph table.  Original to this project; no third-party artwork or pixels are used. | CC0 1.0 (public domain dedication) |
 | Classic 2D tileset (`tiles_classic.png`, `glyph_map_classic.json`) | committed in `godot/assets/tiles/` | Converted by `tools/convert_share_tiles.py` from NetHack's `win/share/monsters.txt`, `objects.txt` and `other.txt` (the pinned submodule). | NGPL (same as NetHack) |
 | 3D materials (`wall`, `floor`, `corridor`, `door`, `door_open`, `stairs`, `water`, `lava`, `tree`) | `godot/assets/3d/*.tres` | Hand-written Godot `StandardMaterial3D` resources using flat colours only; meshes are Godot primitives created in `map_view_3d.gd`. | CC0 1.0 |
 | Application icon | `godot/assets/icons/app_icon.svg` | Hand-written SVG, original to this project. | CC0 1.0 |
@@ -34,6 +35,7 @@ a tile tool, regenerate them and commit the result:
 ```sh
 build/<platform>/nethack_native_test --dump-glyphs build/GLYPHS.tsv
 python3 tools/make_tileset.py build/GLYPHS.tsv godot/assets/tiles
+python3 tools/make_illustrated_tileset.py build/GLYPHS.tsv godot/assets/tiles
 python3 tools/convert_share_tiles.py build/GLYPHS.tsv thirdparty/NetHack/win/share godot/assets/tiles
 python3 tools/check_glyph_coverage.py build/GLYPHS.tsv godot/assets/tiles
 ```

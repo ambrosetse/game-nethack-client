@@ -210,6 +210,10 @@ def draw_tile(img, cx, cy, row):
         return
     if ch < 32 or ch > 126:
         ch = ord("?")
+    if ch == 32 and cat != CMAP:
+        # ghosts and shades are drawn as a blank in the terminal; a blank
+        # tile would hide them, so use their name's first letter
+        ch = ord((name.split()[-1] if cat in (PET, DETECTED, RIDDEN) else name)[:1] or "?")
     if kind == "bricks":
         color = (235, 230, 220)
     draw_char(img, cx + GX, cy + GY, ch, color)

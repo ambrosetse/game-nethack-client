@@ -6,6 +6,9 @@ extends PanelContainer
 
 signal closed
 
+## Tileset option order; matches the items added in _ready().
+const TILESETS := ["illustrated", "original", "classic"]
+
 var _lang: OptionButton
 var _renderer: OptionButton
 var _input: OptionButton
@@ -48,10 +51,11 @@ func _ready() -> void:
 	_input.item_selected.connect(func(i): Settings.set_value("number_pad", i == 1))
 
 	_tiles = _row(grid, "OPTIONS_TILESET")
+	_tiles.add_item("OPTIONS_TILESET_ILLUSTRATED")
 	_tiles.add_item("OPTIONS_TILESET_ORIGINAL")
 	_tiles.add_item("OPTIONS_TILESET_CLASSIC")
-	_tiles.select(1 if Settings.tileset == "classic" else 0)
-	_tiles.item_selected.connect(func(i): Settings.set_value("tileset", "classic" if i == 1 else "original"))
+	_tiles.select(_tileset_index())
+	_tiles.item_selected.connect(func(i): Settings.set_value("tileset", TILESETS[i]))
 
 	var hint := Label.new()
 	hint.text = "OPTIONS_HINT"
@@ -64,6 +68,10 @@ func _ready() -> void:
 	close.pressed.connect(func(): closed.emit())
 	box.add_child(close)
 	Settings.changed.connect(_on_settings_changed)
+
+
+func _tileset_index() -> int:
+	return maxi(TILESETS.find(Settings.tileset), 0)
 
 
 func _row(grid: GridContainer, key: String) -> OptionButton:
@@ -82,7 +90,7 @@ func _on_settings_changed(key: String) -> void:
 		"renderer":
 			_renderer.select(1 if Settings.renderer == "3d" else 0)
 		"tileset":
-			_tiles.select(1 if Settings.tileset == "classic" else 0)
+			_tiles.select(_tileset_index())
 
 
 func _unhandled_key_input(event: InputEvent) -> void:

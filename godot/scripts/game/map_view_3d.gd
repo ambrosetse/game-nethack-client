@@ -25,6 +25,8 @@ var _features := {}  # cell index -> MeshInstance3D
 var _sprites := {}   # cell index -> Sprite3D
 var _kind_cache := {}
 var _camera: Camera3D
+var _env: WorldEnvironment
+var _environment: Environment
 var _pivot: Node3D
 var _top_down := false
 var _yaw := -0.6
@@ -32,6 +34,7 @@ var _pitch := -0.85
 var _distance := 14.0
 var _hero_light: OmniLight3D
 var _dragging := false
+var _drawn := false
 
 
 func setup(p_model, p_atlas, p_glyph_table: Dictionary) -> void:
@@ -55,8 +58,14 @@ func set_atlas(p_atlas) -> void:
 func activate(on: bool) -> void:
 	visible = on
 	_camera.current = on
+	# The environment's background would cover the 2D map while inactive.
+	_env.environment = _environment if on else null
 	if on:
 		_follow()
+
+
+func is_active() -> bool:
+	return visible and _camera.current
 
 
 func _build_resources() -> void:
@@ -109,6 +118,8 @@ func _build_scene() -> void:
 	e.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	env.environment = e
 	add_child(env)
+	_env = env
+	_environment = e
 	var sun := DirectionalLight3D.new()
 	sun.rotation = Vector3(deg_to_rad(-60), deg_to_rad(30), 0)
 	sun.light_energy = 0.35
@@ -220,6 +231,10 @@ func _on_cell(x: int, y: int) -> void:
 		kind = "floor"
 	_set_feature(i, x, y, kind)
 	_set_sprite(i, x, y, g if sprite else -1)
+	if not _drawn and g >= 0:
+		_drawn = true
+		if _camera.current:
+			_follow()
 
 
 func _set_feature(i: int, x: int, y: int, kind: String) -> void:

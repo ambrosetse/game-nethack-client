@@ -392,11 +392,6 @@ void nhb_sleep_ms(int ms) {
 
 unsigned long nhb_fixed_seed(void) { return nhb::g_seed; }
 
-const char *nhb_core_text(const char *s) {
-    /* Single translation hook for core-originated text.  Core messages are
-     * deliberately kept in English (the NetHack core has no message
-     * catalogue); frontends translate their own strings via gettext. */
-    return s;
-}
+/* nhb_core_text() and nhb_set_core_lang() live in core_text.cpp. */
 
 } // extern "C"

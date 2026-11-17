@@ -1,17 +1,20 @@
 extends RefCounted
-## Loads a glyph atlas: tiles*.png plus glyph_map*.json (tools/make_tileset.py
-## or tools/convert_share_tiles.py).
+## Loads a glyph atlas: tiles*.png plus glyph_map*.json (tools/make_tileset.py,
+## tools/make_illustrated_tileset.py or tools/convert_share_tiles.py).
 ##
-## The preferred set is Settings.tileset; when it is missing the other set is
-## used automatically, and when both are missing a flat-colour atlas is built
+## The preferred set is Settings.tileset; when it is missing the other sets are
+## tried in ORDER, and when all are missing a flat-colour atlas is built
 ## from the core's glyph table so the game stays playable.
 
 const NhConst = preload("res://scripts/core/nh_const.gd")
 const DIR := "res://assets/tiles/"
 const SETS := {
+	"illustrated": ["tiles_illustrated.png", "glyph_map_illustrated.json"],
 	"original": ["tiles.png", "glyph_map.json"],
 	"classic": ["tiles_classic.png", "glyph_map_classic.json"],
 }
+## Tried in this order after the preferred set.
+const ORDER := ["illustrated", "original", "classic"]
 
 var texture: Texture2D
 var image: Image
@@ -23,7 +26,10 @@ var source := ""
 
 static func load_preferred(preferred: String, glyph_table: Dictionary) -> RefCounted:
 	var atlas = new()
-	var order := [preferred, "classic" if preferred == "original" else "original"]
+	var order := [preferred]
+	for name in ORDER:
+		if name != preferred:
+			order.append(name)
 	for name in order:
 		if atlas._load_set(name):
 			return atlas

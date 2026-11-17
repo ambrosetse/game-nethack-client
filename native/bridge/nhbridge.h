@@ -125,9 +125,15 @@ void nhb_sleep_ms(int ms);
 unsigned long nhb_fixed_seed(void);
 
 /* Translation hook for core messages: the single place where core strings
- * reach the frontend.  Currently identity (core messages stay English) but
- * the frontend may install a catalogue later; see README "Localisation". */
+ * reach the frontend.  Looks the text up in the core-text table
+ * (tools/core_text_table.txt) for the language set with nhb_set_core_lang();
+ * text not in the table, and every string in English, comes back unchanged.
+ * The result stays valid until 16 more translations on the same thread. */
 const char *nhb_core_text(const char *s);
+
+/* Language for nhb_core_text(): "zh_TW", "zh_CN", "ko" or "ja"; anything
+ * else (including "en" and NULL) turns translation off. */
+void nhb_set_core_lang(const char *lang);
 
 /* --- process / thread control (used by the main entry point) ---------- */
 

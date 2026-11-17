@@ -25,6 +25,8 @@ FILES = (
     "glyph_map.json",
     "tiles_classic.png",
     "glyph_map_classic.json",
+    "tiles_illustrated.png",
+    "glyph_map_illustrated.json",
 )
 
 

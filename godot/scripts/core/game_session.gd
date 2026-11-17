@@ -9,10 +9,11 @@ extends Node
 ## * re-emits blocking input requests for the dialogs.
 ##
 ## Every string the core produces for the player passes through `core_text()`
-## - the single hook where core messages could later be translated.
+## - the single hook where core messages are translated (core_text.gd).
 
 const NhConst = preload("res://scripts/core/nh_const.gd")
 const GameModel = preload("res://scripts/core/game_model.gd")
+const CoreText = preload("res://scripts/core/core_text.gd")
 
 const DATA_SRC := "res://nethack_data"
 const GAME_DIR := "user://nethack"
@@ -115,6 +116,9 @@ func ensure_game() -> bool:
 	game.connect("input_requested", _on_request)
 	game.connect("game_over", _on_game_over)
 	glyph_table = game.call("get_glyph_table")
+	_sync_core_language()
+	if not Settings.changed.is_connected(_sync_core_language):
+		Settings.changed.connect(_sync_core_language)
 	return true
 
 
@@ -205,9 +209,19 @@ func waiting_for_command() -> bool:
 	return not pending_request.is_empty() and pending_request.get("type") == NhConst.EV_REQ_KEY
 
 
-## The single hook every core-produced string passes through.
+## The single hook every core-produced string passes through: translated for
+## Settings.language through the core-text table (tools/core_text_table.txt);
+## text not in the table comes back in English.  Text the native port already
+## translated is not in the table's English column, so it passes unchanged.
 func core_text(text: String) -> String:
-	return game.call("core_text", text) if game != null else text
+	if game != null and game.has_method("set_core_language"):
+		return game.call("core_text", text)
+	return CoreText.translate(text, Settings.language)
+
+
+func _sync_core_language(key: String = "language") -> void:
+	if key == "language" and game != null and game.has_method("set_core_language"):
+		game.call("set_core_language", Settings.language)
 
 
 # --- event handling -------------------------------------------------------

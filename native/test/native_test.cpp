@@ -12,6 +12,9 @@
  *       save file exists.  With --expect-restore, asserts that the run
  *       restored the previous save instead of starting a new character.
  *
+ *   nethack_native_test --core-text
+ *       Checks the core-text translator (nhb_core_text) on fixed cases.
+ *
  * Exit status 0 = pass.  Uses only the bridge (no Godot).
  *
  * NetHack may be freely redistributed.  See license for details.
@@ -228,6 +231,54 @@ static int play(const std::string &game_dir, unsigned long seed,
     return fails ? 1 : 0;
 }
 
+/* nhb_core_text(): table lookups, patterns, suffixes and English fallback.
+ * godot/tests/run_tests.gd checks the GDScript mirror on the same cases. */
+static int core_text() {
+    struct Case {
+        const char *lang, *in, *want;
+    };
+    const Case cases[] = {
+        {"en", "Really save?", "Really save?"},
+        {"ja", "Really save? [yn] (n)",
+         "\xe6\x9c\xac\xe5\xbd\x93\xe3\x81\xab\xe3\x82\xbb\xe3\x83\xbc\xe3\x83\x96"
+         "\xe3\x81\x97\xe3\x81\xbe\xe3\x81\x99\xe3\x81\x8b\xef\xbc\x9f [yn] (n)"},
+        {"zh_TW", "Dlvl:3", "\xe5\x9c\xb0\xe4\xb8\x8b 3 \xe5\xb1\xa4"},
+        {"zh_TW", "Hello Agnes, welcome to NetHack! You are a neutral female human Valkyrie.",
+         "\xe4\xbd\xa0\xe5\xa5\xbd\xef\xbc\x8c" "Agnes\xef\xbc\x8c\xe6\xad\xa1\xe8\xbf\x8e"
+         "\xe4\xbe\x86\xe5\x88\xb0 NetHack\xef\xbc\x81\xe4\xbd\xa0\xe6\x98\xaf"
+         "\xe4\xb8\xad\xe7\xab\x8b\xe5\xa5\xb3\xe6\x80\xa7\xe4\xba\xba\xe9\xa1\x9e"
+         "\xe5\xa5\xb3\xe6\xad\xa6\xe7\xa5\x9e\xe3\x80\x82"},
+        /* an unknown word keeps the capture in English */
+        {"ko", "Hello Agnes, welcome to NetHack! You are a neutral female hobbit Valkyrie.",
+         "\xec\x95\x88\xeb\x85\x95\xed\x95\x98\xec\x84\xb8\xec\x9a\x94, Agnes\xeb\x8b\x98. "
+         "NetHack\xec\x97\x90 \xec\x98\xa4\xec\x8b\xa0 \xea\xb2\x83\xec\x9d\x84 "
+         "\xed\x99\x98\xec\x98\x81\xed\x95\xa9\xeb\x8b\x88\xeb\x8b\xa4! \xeb\x8b\xb9\xec\x8b\xa0"
+         "\xec\x9d\x80 neutral female hobbit Valkyrie\xec\x9e\x85\xeb\x8b\x88\xeb\x8b\xa4."},
+        {"zh_CN", "You hit the newt.", "You hit the newt."},
+        {"zh_CN", "", ""},
+    };
+    int fails = 0;
+    for (const Case &c : cases) {
+        nhb_set_core_lang(c.lang);
+        const char *got = nhb_core_text(c.in);
+        if (std::strcmp(got, c.want) != 0) {
+            std::printf("FAIL core_text[%s] %s\n  got  %s\n  want %s\n", c.lang, c.in, got,
+                        c.want);
+            ++fails;
+        }
+    }
+    /* untranslated text is returned as the same pointer */
+    nhb_set_core_lang("ja");
+    const char *same = "Unknown message";
+    if (nhb_core_text(same) != same) {
+        std::printf("FAIL core_text: unknown text was copied\n");
+        ++fails;
+    }
+    nhb_set_core_lang(nullptr);
+    std::printf(fails ? "core_text FAILED (%d)\n" : "core_text PASSED\n", fails);
+    return fails ? 1 : 0;
+}
+
 int main(int argc, char **argv) {
     std::string game_dir;
     unsigned long seed = 42;
@@ -235,6 +286,8 @@ int main(int argc, char **argv) {
     for (int k = 1; k < argc; ++k) {
         if (!std::strcmp(argv[k], "--dump-glyphs") && k + 1 < argc)
             return dump_glyphs(argv[++k]);
+        if (!std::strcmp(argv[k], "--core-text"))
+            return core_text();
         if (!std::strcmp(argv[k], "--play") && k + 1 < argc)
             game_dir = argv[++k];
         else if (!std::strcmp(argv[k], "--seed") && k + 1 < argc)
@@ -244,7 +297,7 @@ int main(int argc, char **argv) {
     }
     if (game_dir.empty()) {
         std::fprintf(stderr,
-                     "usage: %s --dump-glyphs OUT.tsv | --play GAMEDIR "
+                     "usage: %s --dump-glyphs OUT.tsv | --core-text | --play GAMEDIR "
                      "[--seed N] [--expect-restore]\n",
                      argv[0]);
         return 2;

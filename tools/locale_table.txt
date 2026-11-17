@@ -43,6 +43,7 @@ OPTIONS_MOVEMENT_NUMPAD|Number pad|數字鍵盤|数字键盘|숫자 키패드|�
 OPTIONS_TILESET|Tileset|圖塊集|图块集|타일셋|タイルセット
 OPTIONS_TILESET_ORIGINAL|Original|原創|原创|오리지널|オリジナル
 OPTIONS_TILESET_CLASSIC|Classic (NetHack tiles)|經典（NetHack 圖塊）|经典（NetHack 图块）|클래식 (NetHack 타일)|クラシック（NetHack タイル）
+OPTIONS_TILESET_ILLUSTRATED|Illustrated|插畫|插画|일러스트|イラスト
 OPTIONS_HINT|F2 switches 2D/3D in game. Movement keys apply to the next game.|遊戲中按 F2 切換 2D/3D。移動按鍵於下一局生效。|游戏中按 F2 切换 2D/3D。移动按键于下一局生效。|게임 중 F2로 2D/3D를 전환합니다. 이동 키는 다음 게임부터 적용됩니다.|ゲーム中は F2 で 2D/3D を切り替えます。移動キーは次のゲームから有効です。
 HUD_MESSAGES|Messages|訊息|消息|메시지|メッセージ
 HUD_HISTORY|History|歷史|历史|기록|履歴
